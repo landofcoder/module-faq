@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<body>
+		<referenceContainer name="sidebar.additional">
+			<block class="Lof\Faq\Block\Category\CatList" name="faq.category.list" template="Lof_Faq::category/list.phtml" before="-">
+				<arguments>
+					<argument name="show_parent" xsi:type="boolean">true</argument>
+				</arguments>
+			</block>
+			<block class="Lof\Faq\Block\Tag\TagList" ifconfig="loffaq/sidebar/show_tagblock" name="faq.tag.list" template="Lof_Faq::tag/list.phtml" after="faq.category.list"/>
+		</referenceContainer>
+		<referenceContainer name="content">
+			<block class="Magento\Framework\View\Element\Template" ifconfig="loffaq/category_page/searchform_enable" name="faq.searchform" template="Lof_Faq::category/searchform.phtml" before="-"/>
+			<block class="Lof\Faq\Block\Category\View" name="loffaq.questions" template="Lof_Faq::category/view.phtml">
+				<block class="Lof\Faq\Block\Toolbar" name="faq_toolbar" template="Lof_Faq::toolbar.phtml">
+					<block class="Magento\Theme\Block\Html\Pager" name="faq_toolbar_pager"/>
+				</block>
+			</block>
+		</referenceContainer>
+	</body>
+</page>

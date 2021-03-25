@@ -1,0 +1,446 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<section id="loffaq" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+			<class>separator-top</class>
+			<label>FAQ</label>
+			<tab>landofcoder</tab>
+			<resource>Lof_Faq::config_faq</resource>
+			<group id="general_settings" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>General Settings</label>
+				<field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="route" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Route</label>
+				</field>
+				<field id="question_route" translate="label comment" type="text" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Route</label>
+				</field>
+			</group>
+			<group id="faq_page" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>FAQ Page</label>
+				<field id="layout_type" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Layout Type</label>
+					<source_model>Lof\Faq\Model\Config\Source\LayoutType</source_model>
+				</field>
+
+				<field id="featuredblock" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Featured Block</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="number_featured_questions" translate="label comment" type="text" sortOrder="15" showInDefault="13" showInWebsite="1" showInStore="1">
+					<label>Number Featured Questions</label>
+					<depends><field id="featuredblock">1</field></depends>
+				</field>
+				<field id="latestblock" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Latest Block</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="number_latest_questions" translate="label comment" type="text" sortOrder="30" showInDefault="13" showInWebsite="1" showInStore="1">
+					<label>Number Latest Questions</label>
+					<depends><field id="latestblock">1</field></depends>
+				</field>
+				<field id="column" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Column</label>
+					<source_model>Lof\Faq\Model\Config\Source\ColumnType</source_model>
+				</field>
+				<field id="item_per_page" translate="label comment" type="text" sortOrder="50" showInDefault="13" showInWebsite="1" showInStore="1">
+					<label>Number Question Per Page</label>
+					<comment>Empty to show all item</comment>
+					<validate>validate-number</validate>
+				</field>
+				<field id="show_breadcrumbs" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Breadcrumbs</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_toolbartop" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Top</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_toolbarbottom" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Bottom</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="questionlist_heading" translate="label comment" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Settings</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="enable_question_link" translate="label comment" type="select" sortOrder="95" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Question Link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment><![CDATA[Enable/disable question link. Disable the option will use accordion style. Default: Disabled]]></comment>
+				</field>
+				<field id="questionlist_showauthor" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Author</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="questionlist_showdate" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Date</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="questionlist_showcat" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Category</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_desc_cat" translate="label comment" type="select" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Description Category</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showreadmorelink" translate="label comment" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Read More Link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="readmore_char" translate="label comment" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Max chars in answer</label>
+					<comment><![CDATA[Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added " Read More" at the end. If you want to show entire answer, leave it blank]]></comment>
+					<depends><field id="showreadmorelink">1</field></depends>
+				</field>
+				<field id="searchform_heading" translate="label comment" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Search Form</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="searchform_enable" translate="label comment" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="design_heading" translate="label comment" type="text" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Design</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="title_size" type="text" sortOrder="190" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Size(px)</label>
+				</field>
+				<field id="title_color" type="text" sortOrder="200" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Color</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="title_color_active" type="text" sortOrder="310" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Text Color (Active)</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="title_bg" type="text" sortOrder="220" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Background</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="title_bg_active" type="text" sortOrder="230" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Background (Active)</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="border_width" type="text" sortOrder="240" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Border Width(px)</label>
+				</field>
+				<field id="title_border_color" type="text" sortOrder="250" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Border Color</label>
+				</field>
+				<field id="title_border_radius" type="text" sortOrder="260" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title Border Radius</label>
+					<comment><![CDATA[Ex: 5px 5px 5px 5px]]></comment>
+				</field>
+				<field id="body_size" type="text" sortOrder="270" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Body Font Size (px)</label>
+				</field>
+				<field id="body_color" type="text" sortOrder="280" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Body Text Color</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="body_bg" type="text" sortOrder="290" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Body Background Color</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Color</frontend_model>
+				</field>
+				<field id="question_margin" type="text" sortOrder="300" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Distance Between each Question(px)</label>
+				</field>
+				<field id="question_icon" type="text" sortOrder="310" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Icon Class</label>
+					<comment><![CDATA[For ex: <strong>fa-plus-square-o</strong>. Find more class at <a target="_blank" href="http://fontawesome.io/icons/">here</a>]]></comment>
+				</field>
+				<field id="question_active_icon" type="text" sortOrder="320" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Icon Class on Active</label>
+					<comment><![CDATA[For ex: <strong>fa-minus-square-o</strong>. Find more class at <a target="_blank" href="http://fontawesome.io/icons/">here</a>]]></comment>
+				</field>
+				<field id="animation_class" type="select" sortOrder="330" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Animation Type</label>
+					<source_model>Lof\Faq\Model\Config\Source\AnimationType</source_model>
+					<comment><![CDATA[<a href="https://daneden.github.io/animate.css/" target="_blank">Check out all the animations here!</a>]]></comment>
+				</field>
+				<field id="animation_speed" type="text" sortOrder="340" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Animation Speed(s)</label>
+				</field>
+				<field id="seo_heading" translate="label comment" type="text" sortOrder="350" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>SEO</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="page_title" type="text" sortOrder="360" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Page Title</label>
+				</field>
+				<field id="page_layout" translate="label comment" type="select" sortOrder="370" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Page Layout</label>
+					<source_model>Lof\Faq\Model\Config\Source\PageLayout</source_model>
+				</field>
+				<field id="meta_description" type="textarea" sortOrder="380" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Meta Description</label>
+				</field>
+				<field id="meta_keywords" type="textarea" sortOrder="390" translate="label comment" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Meta Keywords</label>
+				</field>
+			</group>
+			<group id="category_page" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Category Page</label>
+				<field id="item_per_page" translate="label comment" type="text" sortOrder="10" showInDefault="13" showInWebsite="1" showInStore="1">
+					<label>Number Question Per Page</label>
+					<comment>Empty to show all item</comment>
+					<validate>validate-number</validate>
+				</field>
+				<field id="show_breadcrumbs" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Breadcrumbs</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_toolbartop" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Top</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_toolbarbottom" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Bottom</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="category_heading" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Settings</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="enable_question_link" translate="label comment" type="select" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Question Link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment><![CDATA[Enable/disable question link. Disable the option will use accordion style. Default: Disabled]]></comment>
+				</field>
+				<field id="showauthor" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Author</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showdate" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Date</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showcat" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Category</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showreadmorelink" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Read More Link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="readmore_char" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Max chars in answer</label>
+					<comment><![CDATA[Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added " Read More" at the end. If you want to show entire answer, leave it blank]]></comment>
+					<depends><field id="showreadmorelink">1</field></depends>
+				</field>
+				<field id="searchform_heading" translate="label comment" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Search Form</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="searchform_enable" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+			</group>
+			<group id="question_page" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Question Page</label>
+				<field id="showauthor" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Author</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showdate" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Date</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showcat" translate="label comment" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Category</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_likedislike" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Like/Dislike Button</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field> 
+				<field id="networks_heading" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Social Buttons</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="enable_networks" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="networks" translate="label comment" type="multiselect" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Networks</label>
+					<source_model>Lof\Faq\Model\Config\Source\Networks</source_model>
+					<depends><field id="enable_networks">1</field></depends>
+				</field>
+				<field id="networks_relatedquestions" translate="label comment" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Related Questions Block</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="enable_relatedquestions" translate="label comment" type="select" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="related_template" translate="label comment" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Template</label>
+					<source_model>Lof\Faq\Model\Config\Source\RelatedTemplate</source_model>
+					<depends><field id="enable_relatedquestions">1</field></depends>
+				</field>
+			</group>
+			<group id="faq_productpage" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>FAQ In Product Page</label>
+				<field id="enable" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="layout_type" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Layout Type</label>
+					<source_model>Lof\Faq\Model\Config\Source\LayoutType</source_model>
+				</field>
+				<field id="column" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Column</label>
+					<source_model>Lof\Faq\Model\Config\Source\ColumnType</source_model>
+					<depends><field id="layout_type">2</field></depends>
+				</field>
+				<field id="item_per_page" translate="label comment" type="text" sortOrder="40" showInDefault="13" showInWebsite="1" showInStore="1">
+					<label>Number Question Per Page</label>
+					<comment>Empty to show all item</comment>
+					<validate>validate-number</validate>
+				</field>
+				<field id="show_toolbartop" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Top</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="show_toolbarbottom" translate="label comment" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Toolbar Bottom</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="questionlist_heading" translate="label comment" type="text" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Question Settings</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="showauthor" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Author</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showdate" translate="label comment" type="select" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Date</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showcat" translate="label comment" type="select" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Category</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="showreadmorelink" translate="label comment" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Read More Link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="readmore_char" translate="label comment" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Max chars in answer</label>
+					<comment><![CDATA[Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added " Read More" at the end. If you want to show entire answer, leave it blank]]></comment>
+					<depends><field id="showreadmorelink">1</field></depends>
+				</field>
+				<field id="popup_heading" translate="label comment" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Popup Settings</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="enable_popup" translate="label comment" type="select" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Popup</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="enable_recaptcha" translate="label comment" type="select" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable reCaptcha</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="enable_categories" translate="label comment" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Popup Categories</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="popup_categories" translate="label comment" type="multiselect" sortOrder="180" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Popup Categories</label>
+					<source_model>Lof\Faq\Model\Config\Source\Categories</source_model>
+					<depends><field id="enable_categories">1</field></depends>
+				</field>
+			</group>
+			<group id="email_settings" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Email Settings</label>
+				<field id="email_receive" translate="label" type="text" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Receive Notification</label>
+					<comment>If you use multiple separate by comma. Note: when sending to many email the load time will increase</comment>
+				</field>
+				<field id="email_template" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Email Template</label>
+					<source_model>Lof\Faq\Model\Config\Source\EmailTemplate</source_model>
+				</field>
+				<field id="enable_testmode" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled Test Mode</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<comment><![CDATA[Enable Test Mode don't send any email, It just store form messages. Enable it if you test the extension on the local which don't have SMTP service.]]></comment>
+				</field>
+				<field id="sender_email_identity" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Email Sender</label>
+					<source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+				</field>
+			</group>
+			<group id="recaptcha_settings" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>ReCaptcha Settings</label>
+				<field id="publickey" translate="label comment" type="text" sortOrder="210" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>ReCAPTCHA Site Key</label>
+					<depends><field id="comment_type">default</field></depends>
+				</field>
+				<field id="privatekey" translate="label comment" type="text" sortOrder="220" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>ReCAPTCHA Secret Key</label>
+					<depends><field id="comment_type">default</field></depends>
+				</field>
+			</group>
+			<group id="sidebar" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Sidebar</label> 
+				<field id="tag_heading" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Tag Block</label>
+					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
+				</field>
+				<field id="show_tagblock" translate="label comment" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enabled</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field>
+				<field id="tagblock_title" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Title</label>
+					<comment><![CDATA[Empty to hide]]></comment>
+					<depends><field id="show_tagblock">1</field></depends>
+				</field>
+				<field id="show_tagcountdown" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Show Number Post</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				</field> 
+				<field id="tags_per_page" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Tags Number</label>
+					<validate>validate-number</validate>
+					<depends><field id="show_tagblock">1</field></depends>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

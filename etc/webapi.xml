@@ -1,0 +1,107 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+
+    <route method="GET" url="/V1/lof-faq/categories/:categoryId/questions">
+        <service class="Lof\Faq\Api\QuestionListByCategoryInterface" method="getQuestionByCategoryForApi"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="GET" url="/V1/lof-faq/tags/:tagCode/questions">
+        <service class="Lof\Faq\Api\QuestionListByTagInterface" method="getQuestionByTagForApi"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="GET" url="/V1/lof-faq/questions/:keyWord">
+        <service class="Lof\Faq\Api\QuestionRepositoryInterface" method="getListByKeyword"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+    <route method="GET" url="/V1/lof-faq/questionListByCustomer">
+        <service class="Lof\Faq\Api\QuestionListByCustomerInterface" method="getQuestionByCustomerForApi"/>
+        <resources>
+            <resource ref="self"/>
+        </resources>
+        <data>
+            <parameter name="customerId" force="true">%customer_id%</parameter>
+        </data>
+    </route>
+    <route method="GET" url="/V1/lof-faq/questionListByProductSku/:product_sku">
+        <service class="Lof\Faq\Api\QuestionListByProductSkuInterface" method="getQuestionByProductSkuForApi"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="GET" url="/V1/lof-faq/question/:questionId">
+        <service class="Lof\Faq\Api\QuestionInfoByIdInterface" method="getById"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="GET" url="/V1/lof-faq/categories">
+        <service class="Lof\Faq\Api\CategoriesInterface" method="getListInFrontend"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/lof-faq/question">
+        <service class="Lof\Faq\Api\QuestionManagementInterface" method="saveInFrontend"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+
+
+    <!--    question admin html -->
+    <route method="GET" url="/V1/admin/lof-faq/questions/">
+        <service class="Lof\Faq\Api\QuestionRepositoryInterface" method="getList"/>
+        <resources>
+            <resource ref="Lof_Faq::question"/>
+        </resources>
+    </route>
+    <route method="GET" url="/V1/admin/lof-faq/categories/">
+        <service class="Lof\Faq\Api\CategoriesInterface" method="getListInBackend"/>
+        <resources>
+            <resource ref="Lof_Faq::category"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/admin/lof-faq/question">
+        <service class="Lof\Faq\Api\QuestionManagementInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::question_save"/>
+        </resources>
+    </route>
+    <route method="PUT" url="/V1/admin/lof-faq/question/:questionId">
+        <service class="Lof\Faq\Api\QuestionManagementInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::question_edit"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/admin/lof-faq/category">
+        <service class="Lof\Faq\Api\CategoriesInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::category_save"/>
+        </resources>
+    </route>
+    <route method="PUT" url="/V1/admin/lof-faq/category/:categoryId">
+        <service class="Lof\Faq\Api\CategoriesInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::category_edit"/>
+        </resources>
+    </route>
+    <route method="POST" url="/V1/admin/lof-faq/tag/">
+        <service class="Lof\Faq\Api\TagsInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::question"/>
+        </resources>
+    </route>
+    <route method="PUT" url="/V1/admin/lof-faq/tag/:tagId">
+        <service class="Lof\Faq\Api\TagsInterface" method="save"/>
+        <resources>
+            <resource ref="Lof_Faq::question"/>
+        </resources>
+    </route>
+</routes>

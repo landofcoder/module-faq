@@ -1,0 +1,35 @@
+{
+    "name": "landofcoder/module-faq",
+    "description": "With Magento 2 FAQ Extension, you will not need to worry about creating useful and nice FAQ page for your ecommerce website. The extension will help you to set up nice informative & SEO-friendly magento 2 FAQ page. With faq page, your customers will find convenient, easily and quick to resolve common issues.",
+    "require": {
+      "landofcoder/module-all" : "1.*"
+    },
+    "type": "magento2-module",
+    "version": "1.0.8",
+    "keywords": [
+      "landofcoder",
+      "landofcoder faq",
+      "faq magento 2",
+      "magento 2 product questions",
+      "helpdesk magento 2",
+      "question and answers for magento 2"
+    ],
+    "license": [
+      "OSL-3.0",
+      "AFL-3.0"
+    ],
+    "authors": [
+      {
+          "name": "Landofcoder",
+          "email": "landofcoder@gmail.com",
+          "role": "Magento 2 Lof Faq"
+      }
+  ],
+    "autoload": {
+      "files": [ "registration.php" ],
+      "psr-4": {
+        "Lof\\Faq\\": ""
+      }
+    }
+  }
+  

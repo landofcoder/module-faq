@@ -1,0 +1,146 @@
+Categories,Categories
+"Add New Category","Add New Category"
+"Save Category","Save Category"
+"Delete Category","Delete Category"
+"Save and Continue Edit","Save and Continue Edit"
+"Edit category '%1'","Edit category '%1'"
+"New Category","New Category"
+"General Information","General Information"
+Title,Title
+"URL Key","URL Key"
+"Relative to Web Site Base URL","Relative to Web Site Base URL"
+Layout,Layout
+Template,Template
+List,List
+Grid,Grid
+"Grid Column","Grid Column"
+1,1
+2,2
+3,3
+4,4
+Image,Image
+Description,Description
+"Store View","Store View"
+Status,Status
+Enabled,Enabled
+Disabled,Disabled
+"Include the block FAQ Category on Sidebar","Include the block FAQ Category on Sidebar"
+Yes,Yes
+No,No
+Position,Position
+General,General
+SEO,SEO
+"Page Title","Page Title"
+Keywords,Keywords
+"Meta Keywords","Meta Keywords"
+"Meta Description","Meta Description"
+ID,ID
+"Category Information","Category Information"
+Questions,Questions
+"Add New Question","Add New Question"
+"Save Question","Save Question"
+"Delete Question","Delete Question"
+"Edit question '%1'","Edit question '%1'"
+"New Question","New Question"
+"Author Information","Author Information"
+Name,Name
+Email,Email
+Author,Author
+"Question Title","Question Title"
+Category,Category
+Answer,Answer
+"Creation Time","Creation Time"
+"Is Featured","Is Featured"
+Type,Type
+"Attribute Set","Attribute Set"
+Visibility,Visibility
+SKU,SKU
+Price,Price
+"Question Information","Question Information"
+Products,Products
+Home,Home
+"Go to Home Page","Go to Home Page"
+FAQ,FAQ
+"You deleted the category.","You deleted the category."
+"We can't find a category to delete.","We can't find a category to delete."
+"This category no longer exists.","This category no longer exists."
+"Edit Category","Edit Category"
+"A total of %1 record(s) have been deleted.","A total of %1 record(s) have been deleted."
+"You saved the category.","You saved the category."
+Question,Question
+"You deleted the question.","You deleted the question."
+"We can't find a question to delete.","We can't find a question to delete."
+"This question no longer exists.","This question no longer exists."
+"Edit Question","Edit Question"
+"You saved the question.","You saved the question."
+"Please check reCaptcha and try again.","Please check reCaptcha and try again."
+"Your question has submitted sucessfully, we will answer that as soon as possible. Thanks you!","Your question has submitted sucessfully, we will answer that as soon as possible. Thanks you!"
+"By category","By category"
+"Newest first","Newest first"
+"Older first","Older first"
+Empty,Empty
+"1 column","1 column"
+"2 columns with left bar","2 columns with left bar"
+"2 columns with right bar","2 columns with right bar"
+"3 columns","3 columns"
+"A category identifier with the same properties already exists in the selected store.","A category identifier with the same properties already exists in the selected store."
+Edit,Edit
+"Search FAQ","Search FAQ"
+"Your search returns no results","Your search returns no results"
+"%1 keywords matches","%1 keywords matches"
+"Read more","Read more"
+"Created by %1","Created by %1"
+"on %1","on %1"
+"Published in: ","Published in: "
+",",","
+"Ask a Question","Ask a Question"
+Submit,Submit
+"Mosts FAQ","Mosts FAQ"
+Search,Search
+"General Settings","General Settings"
+Route,Route
+"FAQ Page","FAQ Page"
+"Layout Type","Layout Type"
+Column,Column
+"Number Question Per Page","Number Question Per Page"
+"Empty to show all item","Empty to show all item"
+"Show Breadcrumbs","Show Breadcrumbs"
+"Show Toolbar Top","Show Toolbar Top"
+"Show Toolbar Bottom","Show Toolbar Bottom"
+"Question Settings","Question Settings"
+"Show Author","Show Author"
+"Show Date","Show Date"
+"Show Category","Show Category"
+"Show Read More Link","Show Read More Link"
+"Max chars in answer","Max chars in answer"
+"Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added "" Read More"" at the end. If you want to show entire answer, leave it blank","Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added "" Read More"" at the end. If you want to show entire answer, leave it blank"
+"Search Form","Search Form"
+Enable,Enable
+"Page Layout","Page Layout"
+"Category Page","Category Page"
+"Question Page","Question Page"
+"FAQ In Product Page","FAQ In Product Page"
+"Popup Settings","Popup Settings"
+"Enable Popup","Enable Popup"
+"Enable reCaptcha","Enable reCaptcha"
+"Enable Popup Categories","Enable Popup Categories"
+"Popup Categories","Popup Categories"
+"ReCaptcha Settings","ReCaptcha Settings"
+"ReCAPTCHA Site Key","ReCAPTCHA Site Key"
+"ReCAPTCHA Secret Key","ReCAPTCHA Secret Key"
+"Lof FAQ: Latest Questions","Lof FAQ: Latest Questions"
+"Show a list latest questions","Show a list latest questions"
+"FAQ Categories","FAQ Categories"
+"Questions Featured","Questions Featured"
+"Number Question","Number Question"
+"Number character","Number character"
+Delete,Delete
+"Delete items","Delete items"
+"Are you sure you wan't to delete selected items?","Are you sure you wan't to delete selected items?"
+Created,Created
+Modified,Modified
+"LOF FAQ","LOF FAQ"
+"Category","Category"
+"Already voted!","Already voted!"
+"Thanks for your vote!","Thanks for your vote!"
+"We can\'t process your request right now. Sorry, that\'s all we know.","We can\'t process your request right now. Sorry, that\'s all we know."

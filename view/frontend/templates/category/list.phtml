@@ -1,0 +1,33 @@
+<?php
+$helper     = $this->helper("Lof\Faq\Helper\Data");
+$collection = $block->getCollection();
+$title      = $block->getData('title');
+$id         = rand() . time();
+?>
+<?php if(count($collection)>0) { ?>
+<div class="faqcategory-sidebar block">
+	<div class="block-title"><?php echo ($title)?$title:__('Category'); ?></div>
+	<ul id="faq-cats<?php echo $id ?>" class="faq-cats">
+		<?php echo $block->getCategoryHtml(); ?>
+	</ul>
+	<script type="text/javascript">
+		require([
+			'jquery',
+			<?php if($this->helper("Lof\All\Helper\Data")->getConfig("enable_bootstrap_js")): ?>
+			"Lof_All/lib/bootstrap/js/bootstrap.min"
+		<?php endif; ?>
+		], function(){
+			jQuery(document).ready(function($){
+				$('#faq-cats<?php echo $id ?> .opener').on('click', function(e) {
+					e.preventDefault();
+					var parent = $(this).parents("li").eq(0);
+					$(this).toggleClass('item-active');
+					$(parent).find(".children").eq(0).slideToggle();
+					return false;
+				});
+
+			});
+		});
+	</script>
+</div>
+<?php } ?>

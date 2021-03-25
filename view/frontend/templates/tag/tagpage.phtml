@@ -1,0 +1,194 @@
+<?php
+$helper      		= $this->helper("Lof\Faq\Helper\Data");
+$show_toolbartop    = $helper->getConfig("faq_page/show_toolbartop");
+$show_toolbarbottom = $helper->getConfig("faq_page/show_toolbarbottom");
+$layout             = 1;
+$title_color		= $helper->getConfig('faq_page/title_color');
+$showAuthor			= $helper->getConfig("faq_page/questionlist_showauthor");
+$showDate			= $helper->getConfig("faq_page/questionlist_showdate");
+$showCat			= $helper->getConfig("faq_page/questionlist_showcat");
+$column			    = $helper->getConfig("faq_page/column");
+$readMoreLink       = $helper->getConfig("faq_page/showreadmorelink");
+$readMoreChar       = (int)$helper->getConfig("faq_page/readmore_char");
+$column 			= (int)$column?$column:3;
+$collection         = $this->getCollection();
+$total 				= $collection->count(); 
+$itemsperpage 		= (int)$helper->getConfig('faq_page/item_per_page');
+$isSearch 			= $this->getData('is_search');
+$total 				= $collection->count();
+?>
+<?php if($isSearch && $total == 0){ ?>
+<?php echo __('Your search returns no results'); ?>
+<?php } ?>
+<?php if($collection->count()){ ?>
+<?php if($isSearch && $total){ ?>
+<span id="faqsearch-result"><?php echo __('%1 keywords matches', $total); ?></span>
+<?php } ?>
+
+<?php if(!$isSearch){ ?>
+<div class="lof-faq">
+	<?php } ?> 
+	
+	<?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
+	<?php if($show_toolbartop && ($layout == 1 || $layout == 2) && $isSearch && $toolbarHtml) { ?>
+	<div class="faq-toolbar toolbar">
+		<?php echo $toolbarHtml; ?>
+	</div>
+	<?php } ?>
+	<?php
+		$widgetTitleStyle = ($helper->getConfig('faq_page/title_bg'))?$helper->getConfig('faq_page/title_bg'):$title_color;
+		if($widgetTitleStyle) $widgetTitleStyle = 'style="color: ' . $widgetTitleStyle . '"';
+		?>
+	<div id="faqpage" class="faq<?php echo $layout ?> question-list question-list<?php echo $layout ?>">
+		<h3 class="faqcat-title" <?php echo $widgetTitleStyle; ?>title="<?php echo __('Tag  '.$block->getNameTag().'') ?>"><?php echo __('Tag : '.$block->getNameTag().'') ?></h3>
+		<?php // LIST, GRID ?>
+		<?php
+		$i = 1;
+		$x = 0;
+		?>
+		<?php if($layout==1 || $layout==2){ ?>
+		<?php foreach ($collection as $_question) { ?>
+		<?php $blockId = rand() . time(); ?>
+		<?php if($layout==2){ ?>
+		<?php if( $column == 1 || $x%$column == 0 || $x%$column == 0){ ?>
+		<div class="row">
+			<?php } ?>
+			<div class="col-lg-<?php echo 12/$column ?> col-md-<?php echo 12/$column ?> col-sm-12 col-xs-12">
+				<?php } ?>
+
+				<div class="panel">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<a data-toggle="collapse" data-parent="#faqpage" href="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" class="collapsed"><?php echo $_question->getTitle() ?></a>
+						</h4>
+					</div>
+					<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" class="panel-collapse collapse">
+						<div class="panel-body">
+							<?php $answer = $_question->getAnswer() ?>
+							<?php if($readMoreLink && $answer!=''){ ?>
+							<?php if($readMoreChar){ ?>
+							<?php echo $helper->subString($answer, $readMoreChar); ?>
+							<?php if(strlen($answer)>$readMoreChar){ ?>
+							<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer; ?>
+							<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer ?>
+							<?php } ?>
+							<div class="question-meta">
+								<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+								<span class="post-author">
+									<?php echo __('Created by %1', $authorName); ?>
+								</span>
+								<?php } ?>
+								<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+								<span class="post-date">
+									<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+								</span>
+								<?php } ?>
+								<?php if($showCat){ ?>
+								<span class="post-categories">
+									<?php echo __('Published in: ') ?>
+									<?php
+									$categories = $_question->getQuestionCategories();
+									$count = count($categories);
+									?>
+									<?php foreach ($categories as $k => $v) { ?>
+									<a href="<?php echo $helper->getCategoryUrl($v)  ?>" title="<?php echo $block->escapeHtml($v['title']); ?>"><?php echo $block->escapeHtml($v['title']); ?></a>
+									<?php if(isset($categories[$k+1])) echo __(','); ?>
+									<?php } ?>
+								</span>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+				</div>
+				<?php if($layout==2){ ?>
+			</div>
+			<?php if( $column == 1 || ($x+1)%$column == 0 || $i == $total ) {  ?>
+		</div>
+		<?php } ?>
+		<?php } ?>
+		<?php $i++; $x++; ?>
+		<?php } ?>
+		<?php } ?> 
+	</div>
+	<script>
+		require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function($){
+			jQuery(document).ready(function($) {
+				$(document).on("click", ".faq<?php echo $layout ?> .panel-heading", function(){
+					var parent = $(this).parents('.faqcat-block');
+					var self = $(this);
+					$(parent).find('.panel-heading').each(function(i,e){
+						if(self.attr('id')!= $(e).attr('id') || $(this).hasClass('active')){
+							$(this).removeClass('active');
+							if($(this).data('color')){
+								$(this).find('a').css("color",$(this).data('color'));
+							}else{
+								$(this).find('a').css("color","");
+							}
+							if($(this).data('bg-color')){
+								$(this).css("background-color",$(this).data('bg-color'));
+							}else{
+								$(this).css("background-color","");
+							}
+							var questionIcon = $(this).find('.panel-title i');
+							questionIcon.removeClass(questionIcon.data('icon-active')).addClass(questionIcon.data('icon'));
+						}else{
+							$(self).addClass('active');
+							var target = $(this).data('target');
+							if($(this).data('animated')){
+								$(target).addClass	($(this).data('animated'));
+							}
+							var questionIcon = $(this).find('.panel-title i');
+							questionIcon.addClass(questionIcon.data('icon-active')).removeClass(questionIcon.data('icon'));
+							if($(self).data('color-active')){
+								$(self).find('a').eq(0).css("color",$(self).data('color-active'));
+							}
+							if($(self).data('bg-color-active')){
+								$(self).css("background-color",$(self).data('bg-color-active'));
+							}
+						}
+					});
+				});
+				var self1 = '';
+				$(".faq<?php echo $layout ?> .panel-heading").hover(function(){
+					self1 = $(this);
+					if(!$(this).hasClass('active')){
+						if($(this).data('color-active')){
+							$(this).find('a').eq(0).css("color",$(this).data('color-active'));
+						}
+						if($(this).data('bg-color-active')){
+							$(this).css("background-color",$(this).data('bg-color-active'));
+						}
+					}
+				}, function(){
+					if(!$(this).hasClass('active')){
+						if($(self1).data('color')){
+							$(self1).find('a').css("color",$(self1).data('color'));
+						}else{
+							$(self1).find('a').css("color","");
+						}
+						if($(self1).data('bg-color')){
+							$(self1).css("background-color",$(self1).data('bg-color'));
+						}else{
+							$(self1).css("background-color","");
+						}
+					}
+					self1 = '';
+				});	
+			});
+		});
+	</script>
+	<?php if($show_toolbarbottom && ($layout == 1 || $layout ==2) && !$isSearch && $toolbarHtml){ ?>
+	<div class="faq-toolbar toolbar">
+		<?php echo $toolbarHtml; ?>
+	</div>
+	<?php } ?>
+	<?php if(!$isSearch){ ?>
+</div>
+<?php } ?>
+<?php } ?>

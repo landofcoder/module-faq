@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="lof_faq" class="Lof\Faq\Block\Widget\Faq">
+        <label translate="true">Lof FAQ: Latest Questions</label>
+        <description translate="true">Show a list latest questions</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" visible="true" required="true">
+                <label translate="true">Title</label>
+            </parameter>
+            <parameter name="categories" xsi:type="multiselect" visible="true" source_model="Lof\Faq\Model\Config\Source\CategoryList">
+                <label translate="true">FAQ Categories</label>
+            </parameter>
+            <parameter name="is_featured" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Questions Featured</label>
+            </parameter>
+            <parameter name="item_per_page" xsi:type="text" visible="true" required="true">
+                <label translate="true">Number Question</label>
+                <value>5</value>
+            </parameter>
+            <parameter name="showauthor" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Author</label>
+            </parameter>
+            <parameter name="showdate" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Date</label>
+            </parameter>
+            <parameter name="showcat" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Category</label>
+            </parameter>
+            <parameter name="enable_question_link" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enable Question Link</label>
+                <description><![CDATA[Enable/disable question link. Disable the option will use accordion style. Default: Disabled]]></description>
+            </parameter>
+            <parameter name="showreadmorelink" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Read More Link</label>
+                <description><![CDATA[Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added " Read More" at the end. If you want to show entire answer, leave it blank]]></description>
+            </parameter>
+            <parameter name="readmore_char" xsi:type="text" visible="true">
+                <label translate="true">Number character</label>
+                <depends><parameter name="showreadmorelink" value="1" /></depends>
+                <value>200</value>
+            </parameter>
+            <parameter name="grid_heading" xsi:type="conditions" visible="true" class="Lof\Faq\Block\Adminhtml\System\Config\Form\Field\WidgetHeading">
+                <label translate="true">Design Options</label>
+            </parameter>
+            <parameter name="title_size" xsi:type="text" visible="true" >
+                <label translate="true">Title Size(px)</label>
+            </parameter>
+            <parameter name="title_color" xsi:type="text" visible="true" >
+                <label translate="true">Title Color</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="title_color_active" xsi:type="text" visible="true" >
+                <label translate="true">Title Text Color(active)</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="title_bg" xsi:type="text" visible="true">
+                <label translate="true">Title Background Color</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="title_bg_active" xsi:type="text" visible="true">
+                <label translate="true">Title Background Color (active)</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="border_width" xsi:type="text" visible="true" >
+                <label translate="true">Border width(px)</label>
+            </parameter>
+            <parameter name="title_border_color" xsi:type="text" visible="true" >
+                <label translate="true">Title Border Color</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="title_border_radius" xsi:type="text" visible="true">
+                <label translate="true">Title Border Radius</label>
+                <description translate="true"><![CDATA[ Example: 5px 5px 5px 5px ]]></description>
+            </parameter>
+            <parameter name="body_size" xsi:type="text" visible="true" >
+                <label translate="true">Body Font Size(px)</label>
+            </parameter>
+            <parameter name="body_color" xsi:type="text" visible="true" >
+                <label translate="true">Body Title Color</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="body_bg" xsi:type="text" visible="true" >
+                <label translate="true">Body Background Color</label>
+                <description translate="true"><![CDATA[Input color name or color code. Example: #CC0000, white,...]]></description>
+            </parameter>
+            <parameter name="question_margin" xsi:type="text" visible="true" >
+                <label translate="true">Distance Between Each Question(px)</label>
+            </parameter>
+            <parameter name="question_icon" xsi:type="text" visible="true" >
+                <label translate="true">Question Icon Class</label>
+                <description translate="true"><![CDATA[For ex: <strong>fa-plus-square-o</strong>. Find more class at <a target="_blank" href="http://fontawesome.io/icons/">here</a>]]></description>
+            </parameter>
+            <parameter name="question_active_icon" xsi:type="text" visible="true" >
+                <label translate="true">Question Icon Class on Active</label>
+                <description translate="true"><![CDATA[For ex: <strong>fa-minus-square-o</strong>. Find more class at <a target="_blank" href="http://fontawesome.io/icons/">here</a>]]></description>
+            </parameter>
+            <parameter name="animation_class" xsi:type="select" visible="true" source_model="Lof\Faq\Model\Config\Source\AnimationType">
+                <label translate="true">Animation Type</label>
+            </parameter>
+            <parameter name="animation_speed" xsi:type="text" visible="true" >
+                <label translate="true">Animation Speed(s)</label>
+            </parameter>
+        </parameters>
+    </widget>
+    <widget id="lof_faq_product_question" class="Lof\Faq\Block\Widget\ProductQuestion">
+        <label translate="true">Lof FAQ: Product Questions Form and Listing</label>
+        <description translate="true">Show a list latest product questions and form on product view page. Add widget on any position on product view page</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" visible="true" required="true">
+                <label translate="true">Title</label>
+            </parameter>
+            <parameter name="layout_type" xsi:type="select" visible="true" source_model="Lof\Faq\Model\Config\Source\LayoutType">
+                <label translate="true">Layout Type</label>
+            </parameter>
+            <parameter name="column" xsi:type="select" visible="true" source_model="Lof\Faq\Model\Config\Source\ColumnType">
+                <label translate="true">Column</label>
+                <depends><parameter name="layout_type" value="2" /></depends>
+            </parameter>
+            <parameter name="item_per_page" xsi:type="text" visible="true" required="true">
+                <label translate="true">Number Question Per Page</label>
+            </parameter>
+            <parameter name="show_pagging" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Paging</label>
+            </parameter>
+            <parameter name="show_toolbartop" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Toolbar Top</label>
+            </parameter>
+            <parameter name="show_toolbarbottom" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Toolbar Bottom</label>
+            </parameter>
+            <parameter name="showauthor" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Author</label>
+            </parameter>
+            <parameter name="showdate" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Date</label>
+            </parameter>
+            <parameter name="showcat" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Category</label>
+            </parameter>
+            <parameter name="showreadmorelink" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Readmore Link</label>
+            </parameter>
+            <parameter name="readmore_char" xsi:type="text" visible="true" required="true">
+                <label translate="true">Max chars in answer</label>
+                <description translate="true"><![CDATA[Put number to limit characters shown on each answers. If the number of character are longer than you did input, it's automatically cut and added " Read More" at the end. If you want to show entire answer, leave it blank]]></description>
+                <depends><parameter name="showreadmorelink" value="1" /></depends>
+            </parameter>
+            <parameter name="enable_popup" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enable Popup</label>
+            </parameter>
+            <parameter name="enable_recaptcha" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enable reCaptcha</label>
+            </parameter>
+            <parameter name="enable_categories" xsi:type="select" visible="true" source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Enable Categories</label>
+            </parameter>
+            <parameter name="popup_categories" xsi:type="multiselect" visible="true" source_model="Lof\Faq\Model\Config\Source\Categories">
+                <label translate="true">Popup Categories</label>
+                <depends><parameter name="enable_categories" value="1" /></depends>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

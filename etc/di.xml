@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="faq_question_listing_data_source" xsi:type="string">Lof\Faq\Model\ResourceModel\Question\Grid\Collection</item>
+                <item name="faq_category_listing_data_source" xsi:type="string">Lof\Faq\Model\ResourceModel\Category\Grid\Collection</item>
+                <item name="faq_tag_listing_data_source" xsi:type="string">Lof\Faq\Model\ResourceModel\Tag\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Lof\Faq\Model\ResourceModel\Question\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_faq_question</argument>
+            <argument name="eventPrefix" xsi:type="string">faq_question_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">question_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\Faq\Model\ResourceModel\Question</argument>
+        </arguments>
+    </type>
+    <type name="Lof\Faq\Model\ResourceModel\Category\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_faq_category</argument>
+            <argument name="eventPrefix" xsi:type="string">faq_category_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">faqcategory_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\Faq\Model\ResourceModel\Category</argument>
+        </arguments>
+    </type>
+    <type name="Lof\Faq\Model\ResourceModel\Tag\Grid\Collection">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">lof_faq_question_tag</argument>
+            <argument name="eventPrefix" xsi:type="string">faq_tag_grid_collection</argument>
+            <argument name="eventObject" xsi:type="string">faqtag_grid_collection</argument>
+            <argument name="resourceModel" xsi:type="string">Lof\Faq\Model\ResourceModel\Tag</argument>
+        </arguments>
+    </type>
+    <virtualType name="FaqGirdFilterPool" type="Magento\Framework\View\Element\UiComponent\DataProvider\FilterPool">
+        <arguments>
+            <argument name="appliers" xsi:type="array">
+                <item name="regular" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\RegularFilter</item>
+                <item name="fulltext" xsi:type="object">Magento\Framework\View\Element\UiComponent\DataProvider\FulltextFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="QuestionGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Lof\Faq\Model\ResourceModel\Question\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">FaqGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="CategoryGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Lof\Faq\Model\ResourceModel\Category\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">FaqGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="TagGridDataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+        <arguments>
+            <argument name="collection" xsi:type="object" shared="false">Lof\Faq\Model\ResourceModel\Tag\Collection</argument>
+            <argument name="filterPool" xsi:type="object" shared="false">FaqGirdFilterPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\QuestionFilterProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="store_id" xsi:type="object">Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\QuestionStoreFilter</item>
+                <item name="category_id" xsi:type="object">Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\QuestionCategoryFilter</item>
+                <item name="tag_code" xsi:type="object">Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\QuestionTagFilter</item>
+                <item name="product_id" xsi:type="object">Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\QuestionProductFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Lof\Faq\Model\Api\SearchCriteria\QuestionCollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Lof\Faq\Model\Api\SearchCriteria\CollectionProcessor\QuestionFilterProcessor</item>
+                <item name="sorting" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\SortingProcessor</item>
+                <item name="pagination" xsi:type="object">Magento\Framework\Api\SearchCriteria\CollectionProcessor\PaginationProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+
+    <!--    faq rest api-->
+    <preference for="Lof\Faq\Api\QuestionListByCategoryInterface" type="\Lof\Faq\Model\Data\QuestionByCategory"/>
+    <preference for="Lof\Faq\Api\QuestionListByProductSkuInterface" type="\Lof\Faq\Model\Data\QuestionByProductSku"/>
+    <preference for="Lof\Faq\Api\QuestionInfoByIdInterface" type="\Lof\Faq\Model\Data\QuestionById"/>
+    <preference for="Lof\Faq\Api\QuestionListByTagInterface" type="\Lof\Faq\Model\Data\QuestionByTag"/>
+    <preference for="Lof\Faq\Api\QuestionRepositoryInterface" type="\Lof\Faq\Model\Data\QuestionRepository"/>
+    <preference for="Lof\Faq\Api\QuestionListByCustomerInterface" type="\Lof\Faq\Model\Data\QuestionByCustomer"/>
+
+    <preference for="Lof\Faq\Api\CategoriesInterface" type="\Lof\Faq\Model\Data\Categories"/>
+
+    <preference for="Lof\Faq\Api\TagsInterface" type="\Lof\Faq\Model\Data\Tag"/>
+
+    <preference for="\Lof\Faq\Api\Data\TagInterface" type="\Lof\Faq\Model\Data\Tag"/>
+
+    <preference for="\Lof\Faq\Api\Data\QuestionSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+    <preference for="\Lof\Faq\Api\Data\CategorySearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+
+    <preference for="\Lof\Faq\Api\QuestionManagementInterface" type="\Lof\Faq\Model\Data\Question"/>
+    <preference for="\Lof\Faq\Api\Data\QuestionInterface" type="\Lof\Faq\Model\Data\Question"/>
+
+<!--    <preference for="Lof\Faq\Api\Data\QuestionInterface" type="\Lof\Faq\Model\Question" />-->
+    <preference for="Lof\Faq\Api\Data\CategoryInterface" type="\Lof\Faq\Model\Category" />
+    <preference for="Lof\Faq\Api\Data\TagInterface" type="\Lof\Faq\Model\Tag" />
+
+    <!--    faq rest api-->
+
+</config>

@@ -1,0 +1,206 @@
+<?php
+$collection           = $block->getCollection();
+$latestFaq            = $this->getlatestFaq();
+$blockId              = rand() . time();
+$helper               = $this->helper("Lof\Faq\Helper\Data");
+$title_size           = $helper->getConfig('faq_page/title_size');
+$title_color          = $helper->getConfig('faq_page/title_color');
+$title_color_active   = $helper->getConfig('faq_page/title_color_active');
+$title_bg             = $helper->getConfig('faq_page/title_bg');
+$title_bg_active      = $helper->getConfig('faq_page/title_bg_active');
+$border_width         = $helper->getConfig('faq_page/border_width');
+$title_border_color   = $helper->getConfig('faq_page/title_border_color');
+$title_border_radius  = $helper->getConfig('faq_page/title_border_radius');
+$body_size            = $helper->getConfig('faq_page/body_size');
+$body_color           = $helper->getConfig('faq_page/body_color');
+$body_bg              = $helper->getConfig('faq_page/body_bg');
+$question_margin      = $helper->getConfig('faq_page/$question_margin');
+$question_icon        = $helper->getConfig('faq_page/question_icon');
+$question_active_icon = $helper->getConfig('faq_page/question_active_icon');
+$animation_class      = $helper->getConfig('faq_page/animation_class');
+$animation_speed      = $helper->getConfig('faq_page/animation_speed');
+$layout               = $helper->getConfig("faq_page/layout_type");
+$featuredblock        = $helper->getConfig("faq_page/featuredblock");
+$latestblock          = $helper->getConfig("faq_page/latestblock");
+$enable_question_link = $helper->getConfig('faq_page/enable_question_link');
+
+$titleStyle = $titleAnchorStyle = $bodyStyle = $titleAttr ='';
+if($title_color_active) $titleAttr .= ' data-color-active = "' . $title_color_active . '"';
+if($title_bg_active) $titleAttr .= ' data-bg-color-active = "' . $title_bg_active . '"';
+if($title_color) $titleAttr .= ' data-color = "' . $title_color . '"';
+if($title_bg) $titleAttr .= ' data-bg-color = "' . $title_bg . '"';
+if((int)$title_size) $titleAnchorStyle .= 'font-size:' . (int)$title_size . 'px;';
+if($title_color) $titleAnchorStyle .= 'color:' . $title_color . ';';
+if($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+if($title_bg) $titleStyle .= 'background-color:' . $title_bg . ';';
+if($border_width) $titleStyle .= 'border-width:' . (int)$border_width . 'px;';
+if($title_border_color) $titleStyle .= 'border-color:' . $title_border_color . ';';
+if($title_border_radius) $titleStyle .= 'border-radius:' . $title_border_radius . ';';
+if($titleStyle) $titleStyle = 'style="' . $titleStyle . '"';
+if($question_margin) $question_margin = 'style="margin-bottom: ' . $question_margin . 'px;"';
+if($body_size) $bodyStyle .= 'font-size: ' . (int)$body_size . 'px;';
+if($body_color) $bodyStyle .= 'color: ' . $body_color . ';';
+if($body_bg) $bodyStyle .= 'background-color: ' . $body_bg . ';';
+if($bodyStyle) $bodyStyle = 'style="' . $bodyStyle . '"';
+$class = '';
+if($layout == 4 || $layout == 5) {
+	$class = 'col-md-6';
+} else {
+	$class = 'col-md-12';
+}
+$count = $collection->count()
+?>
+<?php if($featuredblock || $latestblock){ ?>
+	<div class="faqcat-block">
+		<div class="row">
+			<?php if($featuredblock){ ?>
+			<div class="faq-questions-featured <?php echo $class; ?>">
+			<?php
+			$widgetTitleStyle = ($helper->getConfig('faq_page/title_bg'))?$helper->getConfig('faq_page/title_bg'):$title_color;
+			if($widgetTitleStyle) $widgetTitleStyle = 'style="color: ' . $widgetTitleStyle . '"';
+			?>
+				<h3 class="faqcat-title" <?php echo $widgetTitleStyle ?> title="<?php echo __('Most FAQ') ?>"><?php echo __('Most FAQ') ?></h3>
+				<div class="faqcat-posts question-list" id="faq-questions-featured" >
+				<?php foreach ($collection as $_question) { ?>
+					<?php $blockId = rand() . time(); ?>
+					<?php 
+					$question_link = 'javascript:void(0);';
+					$question_url = $helper->getQuestionUrl($_question);
+					if($enable_question_link){
+						$question_link = $question_url;
+					}
+					?>
+					<div class="panel">
+						<div class="panel-heading collapsed" data-parent="#faq-questions-featured" data-animated="<?php echo  'animated ' . $animation_class ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+							<h4 class="panel-title">
+								<?php if($question_icon){ ?>
+									<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+									<?php } ?>
+									<a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link;?>"><?php echo $_question->getTitle() ?></a>
+							</h4>
+						</div>
+						<?php if(!$enable_question_link){ ?>
+						<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+								<div class="panel-body" <?php echo $bodyStyle; ?>>
+									<?php $answer = $_question->getAnswer() ?>
+									<?php echo $answer ?>
+								</div>
+						</div>
+						<?php } ?>
+					</div>
+					<?php } ?>
+				</div>
+			</div>
+			<?php } ?>
+			<?php if($featuredblock){ ?>
+			<?php if($layout == 4|| $layout == 5) { ?>
+				<div class="faq-questions-latest <?php echo $class; ?>">
+					<?php
+				$widgetTitleStyle = ($helper->getConfig('faq_page/title_bg'))?$helper->getConfig('faq_page/title_bg'):$title_color;
+				if($widgetTitleStyle) $widgetTitleStyle = 'style="color: ' . $widgetTitleStyle . '"';
+				?>
+					<h3 class="faqcat-title" <?php echo $widgetTitleStyle ?> title="<?php echo __('Latest FAQ') ?>"><?php echo __('Latest FAQ') ?></h3>
+					<div class="faqcat-posts question-list" id="faq-questions-featured" >
+					<?php foreach ($latestFaq as $_question) { ?>
+						<?php $blockId = rand() . time(); ?>
+						<?php 
+						$question_link = 'javascript:void(0);';
+						$question_url = $helper->getQuestionUrl($_question);
+						if($enable_question_link){
+							$question_link = $question_url;
+						}
+						?>
+						<div class="panel">
+							<div class="panel-heading collapsed" data-parent="#faq-questions-featured" data-animated="<?php echo  'animated ' . $animation_class ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+								<h4 class="panel-title">
+									<?php if($question_icon){ ?>
+										<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+										<?php } ?>
+										<a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link;?>"><?php echo $_question->getTitle() ?></a>
+								</h4>
+							</div>
+							<?php if(!$enable_question_link){ ?>
+							<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+									<div class="panel-body" <?php echo $bodyStyle; ?>>
+										<?php $answer = $_question->getAnswer() ?>
+										<?php echo $answer ?>
+									</div>
+							</div>
+							<?php } ?>
+						</div>
+						<?php } ?>
+					</div>
+				</div>
+				<?php } ?>
+			<?php }?>
+		</div>		
+	</div>	
+	<?php if(!$enable_question_link){ ?>
+	<script>
+		require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function(jQuery){
+			jQuery(document).ready(function($) {
+				$(document).on("click", "#faq-questions-featured .panel-heading", function(){
+					var self = $(this);
+					$('#faq-questions-featured').find('.panel-heading').each(function(i,e){
+						if(self.attr('id')!= $(e).attr('id') || $(this).hasClass('active')){
+							$(this).removeClass('active');
+							if($(this).data('color')){
+								$(this).find('a').css("color",$(this).data('color'));
+							}else{
+								$(this).find('a').css("color","");
+							}
+							if($(this).data('bg-color')){
+								$(this).css("background-color",$(this).data('bg-color'));
+							}else{
+								$(this).css("background-color","");
+							}
+							var questionIcon = $(this).find('.panel-title i');
+							questionIcon.removeClass(questionIcon.data('icon-active')).addClass(questionIcon.data('icon'));
+						}else{
+							$(self).addClass('active');
+							var target = $(this).data('target');
+							if($(this).data('animated')){
+								$(target).addClass	($(this).data('animated'));
+							}
+							var questionIcon = $(this).find('.panel-title i');
+							questionIcon.addClass(questionIcon.data('icon-active')).removeClass(questionIcon.data('icon'));
+							if($(self).data('color-active')){
+								$(self).find('a').eq(0).css("color",$(self).data('color-active'));
+							}
+							if($(self).data('bg-color-active')){
+								$(self).css("background-color",$(self).data('bg-color-active'));
+							}
+						}
+					});
+				});
+				var self1 = '';
+				$("#faq-questions-featured .panel-heading").hover(function(){
+					self1 = $(this);
+					if(!$(this).hasClass('active')){
+						if($(this).data('color-active')){
+							$(this).find('a').eq(0).css("color",$(this).data('color-active'));
+						}
+						if($(this).data('bg-color-active')){
+							$(this).css("background-color",$(this).data('bg-color-active'));
+						}
+					}
+				}, function(){
+					if(!$(this).hasClass('active')){
+						if($(self1).data('color')){
+							$(self1).find('a').css("color",$(self1).data('color'));
+						}else{
+							$(self1).find('a').css("color","");
+						}
+						if($(self1).data('bg-color')){
+							$(self1).css("background-color",$(self1).data('bg-color'));
+						}else{
+							$(self1).css("background-color","");
+						}
+					}
+					self1 = '';
+				});	
+			});
+		});
+	</script>
+<?php } ?>
+<?php } ?>

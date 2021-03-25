@@ -1,0 +1,51 @@
+<?php
+$helper = $this->helper("Lof\Faq\Helper\Data");
+$layout = $helper->getConfig("faq_page/layout_type");
+$current_category = $helper->getCoreRegistry()->registry('current_faq_category');
+$current_category_id = 0;
+if($current_category) {
+	$current_category_id = $current_category->getId();
+}
+?>
+<div class="loffaq-search-wrapper">
+	<div class="loffaq-search">
+		<form method="post" id="faq-search" action="<?php echo $block->getUrl('loffaq/index/search') ?>" data-mage-init='{"validation":{}}'>	
+			<div class="main-form"><input type="text" data-validate="{required:true}" name="s" class="faqkeyword" size="50" maxlength="50"></div>
+			<button class="btn-submit"><?php echo __('Search') ?></button>
+			<img class="lofsearch-loader" src="<?php echo $this->getViewFileUrl('Lof_Faq/images/loading.svg'); ?>" alt="<?php echo __("Loading...") ?>"/>
+			<input type="hidden" name="catid" value="<?php echo $current_category_id?(int)$current_category_id:'0'; ?>"/>
+		</form>
+	</div>
+	<script type="text/javascript">
+		require(['jquery', 'mage/validation'], function($){
+			$('.faq-backpage').click(function(){
+				$('.faq-results').hide();
+				$('.lof-faq').show();
+				$(this).hide();
+			});
+			$('#faq-search').validation().submit(function(){
+				var keyword = $('.faqkeyword').val().trim();
+				var category_id = <?php echo $current_category_id?(int)$current_category_id:'0'; ?>;
+				if(keyword!=''){
+					$.ajax({
+						url: '<?php echo $block->getUrl('loffaq/index/search') ?>',
+						type: 'post',
+						data: { s : keyword, isAjax: true, catid : category_id },
+						dataType: 'json',
+						beforeSend: function() {
+							$('.lofsearch-loader').css("display","block");
+						},
+						success: function(result) {
+							console.log(result);
+							$('.lof-faq').hide();
+							$('.lofsearch-loader').css("display","none");
+							$('.faq-results').html('').html(result.html).show();
+							$('.faq-backpage').show();
+						}
+					});
+					return false;
+				}
+			});
+		});
+	</script>
+</div>

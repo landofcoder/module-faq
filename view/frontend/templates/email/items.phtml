@@ -1,0 +1,46 @@
+<?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder EULA that is bundled with
+ * this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.landofcoder.com/LICENSE-1.0.html
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade the extension
+ * to newer versions in the future. If you wish to customize the extension
+ * for your needs please refer to http://www.landofcoder.com/ for more information
+ *
+ * @category   Lof
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+
+/**
+ * Form Builder extension
+ *
+ * @category   Lof
+ * @package    Lof_Faq
+ * @author     Landofcoder Dev Team <landofcoder@gmail.com>
+ */
+/* @var $this Lof_Faq_Block_Email_Items */
+?>
+<div style="border:1px solid #E0E0E0; padding:15px; background:#F9F9F9;">
+<table cellspacing="0" cellpadding="0" border="0" width="100%">
+    <?php $i = 0; foreach ($this->getCustomFormData() as $item): $i++;?>
+    	<?php if(!isset($item['subscription'])): ?>
+        <tr <?php echo (0==$i%2)?' style="background-color:#f2f2f2";':'';?>>
+        <td width="30%" style="padding: 10px;">
+            <strong><?php echo $item['label']; ?></strong>
+        </td>
+        <td style="padding: 10px;"><?php echo $item['value']; ?></td>
+        </tr>
+    	<?php endif; ?>
+    <?php endforeach ?>
+</table>
+</div>

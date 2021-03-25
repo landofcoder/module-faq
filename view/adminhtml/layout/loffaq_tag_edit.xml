@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="editor"/>
+    <head>
+        <css src="Lof_Faq::css/font-awesome.min.css" />
+	</head>
+    <body>
+        <referenceContainer name="page.main.actions">
+            <block class="Lof\Faq\Block\Adminhtml\Menu" name="lof_faq_menu" />
+        </referenceContainer>
+        <referenceContainer name="content">
+            <block class="Lof\Faq\Block\Adminhtml\Tag\Edit" name="faq_tag_edit"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Lof\Faq\Block\Adminhtml\Tag\Edit\Tabs" name="faq_tag_edit_tabs"/>
+        </referenceContainer>
+    </body>
+</page>

@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<body>
+		<referenceBlock name="head.additional">
+		    <block class="Lof\Faq\Block\Question\View" name="opengraph.general" template="Lof_Faq::question/opengraph_general.phtml">
+		    </block>
+		</referenceBlock>
+		<referenceContainer name="sidebar.additional">
+			<block class="Lof\Faq\Block\Category\CatList" name="faq.category.list" template="Lof_Faq::category/list.phtml" before="-"/>
+			<block class="Lof\Faq\Block\Tag\TagList" ifconfig="loffaq/sidebar/show_tagblock" name="faq.tag.list" template="Lof_Faq::tag/list.phtml" after="faq.category.list"/>
+		</referenceContainer>
+		<referenceContainer name="content">
+			<block class="Lof\Faq\Block\Question\View" name="loffaq.question" template="Lof_Faq::question/view.phtml"/>
+			<block class="Lof\Faq\Block\Question\QuestionsRelated" name="blog.questions.related" as="questions_related" template="Lof_Faq::question/questions_related.phtml"/>
+			<referenceBlock name="page.main.title" remove="true"/>
+		</referenceContainer>
+	</body>
+</page>

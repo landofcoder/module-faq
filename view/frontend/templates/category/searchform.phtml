@@ -1,0 +1,50 @@
+<?php
+$helper = $this->helper('Lof\Faq\Helper\Data');
+$coreRegistry = $helper->getCoreRegistry();
+$cat = $coreRegistry->registry('current_faq_category');
+?>
+<div class="loffaq-search-wrapper">
+	<div class="loffaq-search">
+		<form method="get" id="faq-search" action="<?php echo $block->getUrl('loffaq/category/search') ?>" data-mage-init='{"validation":{}}'>
+			<div class="main-form">
+				<input type="text" data-validate="{required:true}" name="s" class="faqkeyword" size="50" maxlength="50">
+				<input type="hidden" name="category_id" value"<?php echo $cat->getId() ?>"/>
+			</div>
+			<input type="submit" class="btn-submit" value="<?php echo __('Search'); ?>">
+			<img class="lofsearch-loader" src="<?php echo $this->getViewFileUrl('Lof_Faq/images/loading.svg'); ?>" alt="<?php echo __("Loading...") ?>"/>
+		</form>
+	</div>
+	<script type="text/javascript">
+		require(['jquery', 'mage/validation'], function($){
+			$('.faq-backpage').click(function(){
+				$('.faq-results').hide();
+				$('.lof-faq').show();
+				$('.fatcat-meta').show();
+				$(this).hide();
+			});
+			$('#faq-search').validation().submit(function(){
+				var keyword = $('.faqkeyword').val().trim();
+				if(keyword!=''){
+					var data = [];
+					$.ajax({
+						url: '<?php echo $block->getUrl('loffaq/category/search') ?>',
+						type: 'post',
+						data: { s : keyword, category_id: <?php echo $cat->getId() ?> },
+						dataType: 'json',
+						beforeSend: function() {
+							$('.lofsearch-loader').css("display","block");
+						},
+						success: function(result) {
+							$('.lof-faq').hide();
+							$('.fatcat-meta').hide();
+							$('.lofsearch-loader').css("display","none");
+							$('.faq-results').html('').html(result.html).show();
+							$('.faq-backpage').show();
+						}
+					});
+					return false;
+				}
+			});
+		});
+	</script>
+</div>

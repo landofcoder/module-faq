@@ -1,0 +1,172 @@
+<?php
+$helper = $this->helper('Lof\Faq\Helper\Data');
+$enableNetworks     = $helper->getConfig("question_page/enable_networks");
+$networks           = array_flip(explode(",", $helper->getConfig("question_page/networks"))); 	
+$question = $block->getQuestion();   
+$showAuthor			= $helper->getConfig("question_page/showauthor");
+$showDate			= $helper->getConfig("question_page/showdate");
+$showCat			= $helper->getConfig("question_page/showcat");
+$show_likedisklike = $helper->getConfig("question_page/show_likedislike");
+$categories = $question->getQuestionCategories();
+$count = count($categories);
+$mediaUrl = $block->getBaseMediaUrl();
+$category = '';
+if($count > 0){
+	foreach ($categories as $_cat) {
+		if($_cat['image']!=''){
+			$category = $this->getQuestionCategory($_cat['category_id']);
+			$col = 9;
+			break;
+		}
+	}
+} 
+$showTagblock      = $helper->getConfig('sidebar/show_tagblock');
+$title             = $helper->getConfig('sidebar/tagblock_title');
+$show_tagcountdown = $helper->getConfig("sidebar/show_tagcountdown");  
+?>
+<div class="row lof-faq-details" >
+	<?php if($category){ ?>
+	<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+		<a href="<?php echo $helper->getCategoryUrl($category->getData()) ?>" title="<?php echo $block->escapeHtml($category->getTitle()); ?>"><img src="<?php echo $mediaUrl . $category->getImage(); ?>" alt="<?php echo $block->escapeHtml($category->getTitle()); ?>" /></a>
+	</div>
+	<?php } ?>
+	<div class="col-lg-<?php echo isset($col)?$col:'12' ?> col-md-<?php echo isset($col)?$col:'12' ?> col-sm-12 col-xs-12">
+		<div class="question-detail">
+			<?php if($questionTitle = $question->getTitle()){ ?>
+			<h2 class="faq-cat-title"><?php echo $questionTitle ?></h2>
+			<?php } ?>
+			<div class="question-content"><?php echo $question->getAnswer() ?></div>
+			<div class="question-meta">
+				<?php if( ($authorName = $question->getAuthorName()) && $showAuthor ){ ?>
+				<span class="post-author">
+					<?php echo __('Created by %1', $authorName); ?>
+				</span>
+				<?php } ?>
+				<?php if($showDate && ($question->getCreationTime()!='')){ ?>
+				<span class="post-date">
+					<?php echo __('on %1', $helper->getFormatDate($question->getCreationTime(), 'medium')); ?>
+				</span>
+				<?php } ?>
+				<?php if($showCat){ ?>
+				<span class="post-categories">
+					<?php echo __('Published in: ') ?>
+					<?php
+					$categories = $question->getQuestionCategories();
+					$count = count($categories);
+					?>
+					<?php foreach ($categories as $k => $v) { ?>
+					<a href="<?php echo $helper->getCategoryUrl($v)  ?>" title="<?php echo $block->escapeHtml($v['title']); ?>"><?php echo $block->escapeHtml($v['title']); ?></a>
+					<?php if(isset($categories[$k+1])) echo __(','); ?>
+					<?php } ?>
+				</span>
+				<?php } ?>
+			</div>
+		</div>
+		<?php if($show_likedisklike){ ?>
+			<div id="like-dislike">
+			<span class="like-text"><?php echo __('Was this article helpful ?')?> </span>
+			<div class="like-button">
+				<button class="btn vbtn-like btn-success"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span><?php echo __('Like <span class="like_disklike"> %1 </span>', (int)$question->getLike()); ?></button>
+				<button class="btn vbtn-dislike btn-danger"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span><?php echo __('Disklike <span class="like_disklike"> %1 </span>', (int)$question->getDisklike()); ?></button>
+			<div class="post-message"></div>
+			</div>
+			<script type="text/javascript">
+				require(['jquery'], function($){
+					jQuery(document).ready(function($) {
+						$('#like-dislike button').click(function(){
+							var self = $(this);
+							var like = 0;
+							if($(this).hasClass('vbtn-like')){
+								like = 1;
+							}
+							var tmp = '';
+							$.ajax({
+								url: '<?php echo $block->getUrl('loffaq/vote/post') ?>',
+								type: 'post',
+								data: { like: like, questionId: <?php echo $question->getId() ?> },
+								dataType: 'json', 
+								success: function(result) {
+									console.log(result);
+									if(result.status){
+										$('#like-dislike .post-message').addClass('post-success');
+									}else{
+										$('#like-dislike .post-message').addClass('post-error');
+									}
+									if(result.like) $('#like-dislike .vbtn-like .like_disklike').html(result.like);
+									if(result.disklike) $('#like-dislike .vbtn-dislike .like_disklike').html(result.disklike);
+								
+									$('#like-dislike .post-message').html(result.message);
+									setTimeout(function(){
+										$('#like-dislike .post-message').html('');
+										$('#like-dislike .post-message').removeClass('post-success').removeClass('post-error');							
+									},2000);
+								}
+							});
+							return false;
+						});
+					});
+				});
+			</script>
+		</div>
+		<?php } ?> 
+		
+		<?php if($enableNetworks){ ?>
+		<div class="lof-faq-social">
+			<div class="addthis_default_style"> 
+	    	<?php if(isset($networks['linkedin'])){ ?>
+	        <a class="addthis_button_linkedin icon" ><i class="fa fa-linkedin"></i></a>
+	        <?php } ?>
+	        <?php if(isset($networks['facebook'])){ ?>
+			<a class="addthis_button_facebook icon "  ><i class="fa fa-facebook"></i></a>
+			<?php } ?>
+			 <?php if(isset($networks['googleplus'])){ ?>
+			<a class="addthis_button_google icon"><i class="fa fa-google-plus"></i></a>
+			<?php } ?>
+	        <?php if(isset($networks['instagram'])){ ?>
+			<a class="addthis_button_instagram_follow icon"><i class="fa fa-instagram"></i></a>
+			<?php } ?>
+	        <?php if(isset($networks['twitter'])){ ?>
+			<a class="addthis_button_twitter icon"><i class="fa fa-twitter"></i></a>
+			<?php } ?>
+	        <?php if(isset($networks['pinterest'])){ ?>
+	         <a class="addthis_button_pinterest_share icon"><i class="fa fa-pinterest"></i></a> 
+	        <?php } ?> 
+	        <a class="addthis_button_compact icon"><i class="fa fa-plus"></i></a> 
+			</div> 
+		</div>
+	<?php } ?> 
+	<?php  
+		$tag  = $question->getTag(); 
+		$tags = explode(",", $tag);
+                if(!empty($tags)){ 
+                    $data = [];
+                    foreach ($tags as $k => $_tag) {
+                    	$name =  strtolower(str_replace(["_", " "], "-", trim($_tag) ) );
+                    	if(trim($_tag)!='' || trim($name)!=''){
+	                        $data[] = [ 
+	                        	'alias' => trim($name),
+	                        	'name' => trim($_tag)
+	                        ];
+                    	}
+                    }
+                } 
+	?>
+	<?php if(!empty($data) && $showTagblock){ ?>
+		<div class="faq-tags-details">
+			<div class="post-tag">
+				<span class="faq-tags-title"><?php echo $title; ?>:</span> 
+				<?php foreach ($data as $k => $v) { ?> 
+					<?php if(trim($v['name'])!=''){ ?>
+						<a href="<?php echo $helper->getTagUrl($v['alias']) ?>"  title="<?php echo $v['name'] ?>"><?php echo $v['name'] ?>
+							<?php if($show_tagcountdown){ ?>
+								<?php } ?>
+						</a> 
+					<?php } ?>
+				<?php } ?>
+				</div> 
+			</div>
+			<?php } ?> 
+		</div>
+	</div>
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-57510af206df4bd0"></script>
+ 

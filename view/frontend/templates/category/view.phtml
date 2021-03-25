@@ -1,0 +1,286 @@
+<?php
+$cat = $this->getCategory();
+$helper = $this->helper("Lof\Faq\Helper\Data");
+$show_toolbartop = $helper->getConfig("category_page/show_toolbartop");
+$show_toolbarbottom = $helper->getConfig("category_page/show_toolbarbottom");
+$layout = $cat->getLayoutType();
+$showAuthor = $helper->getConfig("category_page/showauthor");
+$showDate = $helper->getConfig("category_page/showdate");
+$showCat = $helper->getConfig("category_page/showcat");
+$column = $cat->getGridColumn();
+$readMoreLink = $helper->getConfig("category_page/showreadmorelink");
+$readMoreChar = (int)$helper->getConfig("category_page/readmore_char");
+$column = (int)$column ? $column : 3;
+$collection = $this->getCollection();
+$total = $collection->count();
+$blockId = rand() . time();
+$catCollection = $this->getQuestionCategories();
+$itemsperpage = (int)$helper->getConfig('category_page/item_per_page');
+$isSearch = $this->getData('is_search');
+$getBaseMediaUrl = $block->getBaseMediaUrl();
+$title_size = $cat->getData('title_size');
+$title_color = $cat->getData('title_color');
+$title_color_active = $cat->getData('title_color_active');
+$title_bg = $cat->getData('title_bg');
+$title_bg_active = $cat->getData('title_bg_active');
+$border_width = $cat->getData('border_width');
+$title_border_color = $cat->getData('title_border_color');
+$title_border_radius = $cat->getData('title_border_radius');
+$body_size = $cat->getData('body_size');
+$body_color = $cat->getData('body_color');
+$body_bg = $cat->getData('body_bg');
+$question_margin = $cat->getData('question_margin');
+$question_icon = $cat->getData('question_icon');
+$question_active_icon = $cat->getData('question_active_icon');
+$animation_class = $cat->getData('animation_class');
+$animation_speed = $cat->getData('animation_speed');
+$enable_question_link      = $helper->getConfig('faq_page/enable_question_link');
+
+$titleStyle = $titleAnchorStyle = $bodyStyle = $titleAttr = '';
+if ($title_color_active) $titleAttr .= ' data-color-active = "' . $title_color_active . '"';
+if ($title_bg_active) $titleAttr .= ' data-bg-color-active = "' . $title_bg_active . '"';
+if ($title_color) $titleAttr .= ' data-color = "' . $title_color . '"';
+if ($title_bg) $titleAttr .= ' data-bg-color = "' . $title_bg . '"';
+if ((int)$title_size) $titleAnchorStyle .= 'font-size:' . (int)$title_size . 'px;';
+if ($title_color) $titleAnchorStyle .= 'color:' . $title_color . ';';
+if ($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+if ($title_bg) $titleStyle .= 'background-color:' . $title_bg . ';';
+if ($border_width) $titleStyle .= 'border-width:' . (int)$border_width . 'px;';
+if ($title_border_color) $titleStyle .= 'border-color:' . $title_border_color . ';';
+if ($title_border_radius) $titleStyle .= 'border-radius:' . $title_border_radius . ';';
+if ($titleStyle) $titleStyle = 'style="' . $titleStyle . '"';
+if ($question_margin) $question_margin = 'style="margin-bottom: ' . $question_margin . 'px;"';
+if ($body_size) $bodyStyle .= 'font-size: ' . (int)$body_size . 'px;';
+if ($body_color) $bodyStyle .= 'color: ' . $body_color . ';';
+if ($body_bg) $bodyStyle .= 'background-color: ' . $body_bg . ';';
+if ($bodyStyle) $bodyStyle = 'style="' . $bodyStyle . '"';
+
+$catTitle = $cat->getTitle();
+$catImage = $cat->getImage();
+$catDescription = $cat->getDescription();
+$catTitleStyle = ($cat->getData('title_bg')) ? $cat->getData('title_bg') : $cat->getData('title_color');
+if ($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
+?>
+<?php if ($isSearch && $total == 0) { ?>
+    <?php echo __('Your search returns no results'); ?>
+<?php } ?>
+
+    <?php if ($isSearch && $total) { ?>
+        <span id="faqsearch-result"><?php echo __('%1 keywords matches', $total); ?></span>
+    <?php } ?>
+
+
+    <?php if (!$isSearch) { ?>
+        <button class="faq-backpage"><?php echo __('Back to the category page') ?></button>
+    <?php } ?>
+    <?php if (!$isSearch) { ?>
+        <div class="fatcat-meta">
+            <?php if ($catTitle && !$isSearch) { ?>
+                <h3 class="faqcat-title" <?php echo $catTitleStyle ?>><i class="fa <?php echo $cat->getData('cat_icon'); ?>" <?php echo $catTitleStyle ?>></i><?php echo $catTitle; ?></h3>
+            <?php } ?>
+            <?php if ($catImage && !$isSearch) { ?>
+                <div class="faqcat-image"><img src="<?php echo $getBaseMediaUrl . $catImage ?>" alt="<?php echo $block->escapeHtml($cat->getTitle()); ?>"/></div>
+            <?php } ?>
+            <?php if ($catDescription && !$isSearch) { ?>
+                <div class="faqcat-desc"><?php echo $helper->filter($catDescription) ?></div>
+            <?php } ?>
+        </div>
+    <?php } ?>
+
+    <div class="faq-results"></div>
+    <?php if (!$isSearch) { ?>
+        <div class="lof-faq">
+    <?php } ?>
+    <?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
+    <?php if ($show_toolbartop && ($layout == 1 || $layout == 2) && $isSearch && $toolbarHtml) { ?>
+        <div class="faq-toolbar toolbar">
+            <?php echo $toolbarHtml; ?>
+        </div>
+    <?php } ?>
+    <div id="#faqpage<?php echo $blockId; ?>" class="faq<?php echo $layout ?> question-list">
+        <?php // LIST, GRID ?>
+        <?php
+        $i = 1;
+        $x = 0;
+        ?>
+        <?php if ($layout == 1 || $layout == 2) { ?>
+
+            <?php $collectionChild = $this->getCollectionChildCategory($cat->getId()); ?>
+            <?php if($collectionChild && $collection):?>
+            <?php if ($collectionChild ): ?>
+                <?php foreach ($collectionChild as $childData): ?>
+                    <?php if ($childData->getParentId() == $cat->getId()): ?>
+                        <a href="<?php echo $helper->getCategoryUrl($childData)  ?>">
+                            <h3 class="faqcat-title" title="<?php echo $childData->getTitle(); ?>">
+                                <i class="line"></i>
+                                <i class="fa "></i>
+                                <small class="pull-right"><i class="fa fa-hdd-o fa-fw"></i><?php echo $block->getQuestionByCategory($childData->getId())->getSize(); ?></small>
+                                <?php echo $childData->getTitle(); ?>
+                            </h3>
+                        </a>
+
+
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <?php else:?>
+                    <span class="message"><?php echo __('Dont have any Sub Category !!!')?></span>
+            <?php endif; ?>
+            <?php if($collection):?>
+            <?php foreach ($collection as $_question) { ?>
+                <?php 
+                $question_link = 'javascript:void(0);';
+                $question_url = $helper->getQuestionUrl($_question);
+                if($enable_question_link){
+                    $question_link = $question_url;
+                }
+                ?>
+
+                <?php if($total):?>
+
+                <?php if ($layout == 2) { ?>
+                    <?php if ($column == 1 || $x % $column == 0 || $x % $column == 0) { ?>
+                        <div class="row">
+                    <?php } ?>
+                    <div class="col-lg-<?php echo 12 / $column ?> col-md-<?php echo 12 / $column ?> col-sm-12 col-xs-12">
+                <?php } ?>
+                <div class="panel" <?php echo $question_margin ?>>
+                    <div class="panel-heading collapsed" <?php if(!$enable_question_link){ ?>data-parent="#faqpage" data-animated="<?php echo 'animated ' . $animation_class ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>"<?php } ?>
+                         id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+                        <h4 class="panel-title">
+                            <?php if ($question_icon) { ?>
+                                <i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if ($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+                            <?php } ?>
+                            <a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link;?>"><?php echo $_question->getTitle() ?></a>
+                        </h4>
+                    </div>
+                    <?php if(!$enable_question_link){ ?>
+                    <div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if ($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;" <?php } ?>class="panel-collapse collapse">
+                        <div class="panel-body" <?php echo $bodyStyle; ?>>
+                            <?php $answer = $helper->filter($_question->getAnswer()); ?>
+                            <?php if ($readMoreLink) { ?>
+                                <?php if ($readMoreChar) { ?>
+                                    <?php echo $helper->subString($answer, $readMoreChar); ?>
+                                    <?php if (strlen($answer) > $readMoreChar) { ?>
+                                        <a href="<?php echo $helper->getQuestionUrl($_question) ?>" <?php echo $catTitleStyle ?>><?php echo __('Read more') ?></a>
+                                    <?php } ?>
+                                <?php } else { ?>
+                                    <?php echo $answer; ?>
+                                    <a href="<?php echo $helper->getQuestionUrl($_question) ?>" <?php echo $catTitleStyle ?>><?php echo __('Read more') ?></a>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <?php echo $answer ?>
+                            <?php } ?>
+                            <div class="question-meta">
+                                <?php if (($authorName = $_question->getAuthorName()) && $showAuthor) { ?>
+                                    <?php echo __('Created by %1', $authorName); ?>
+                                <?php } ?>
+                                <?php if ($showDate && ($_question->getCreationTime() != '')) { ?>
+                                    <?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
+                <?php if ($layout == 2) { ?>
+                    </div>
+                    <?php if ($column == 1 || ($x + 1) % $column == 0 || $i == $total) { ?>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
+                <?php $i++;
+                $x++; ?>
+                    <?php endif;?>
+            <?php } ?>
+                <?php else:?>
+                    <span class="message"><?php echo __('Dont have any Question !!!')?></span>
+                <?php endif; ?>
+            <?php else:?>
+                <span class="message"><?php echo __('Dont have any Sub Category and Question !!!')?></span>
+            <?php endif; ?>
+        <?php } ?>
+
+        <?php if (!$isSearch && !$enable_question_link) { ?>
+            <script>
+                require(['jquery', 'Lof_All/lib/bootstrap/js/bootstrap.min'], function ($) {
+                    jQuery(document).ready(function ($) {
+                        $(document).on("click", "#faqpage<?php echo $blockId; ?> .panel-heading", function () {
+                            var panel = $(this).parent('.panel');
+                            panel.find('.panel-collapse').eq(0).toggleClass('in');
+                            var self = $(this);
+                            $('#faqpage<?php echo $blockId; ?>').find('.panel-heading').each(function (i, e) {
+                                if (self.attr('id') != $(e).attr('id') || $(this).hasClass('active')) {
+                                    $(this).removeClass('active');
+                                    if ($(this).data('color')) {
+                                        $(this).find('a').css("color", $(this).data('color'));
+                                    } else {
+                                        $(this).find('a').css("color", "");
+                                    }
+                                    if ($(this).data('bg-color')) {
+                                        $(this).css("background-color", $(this).data('bg-color'));
+                                    } else {
+                                        $(this).css("background-color", "");
+                                    }
+                                    var questionIcon = $(this).find('.panel-title i');
+                                    questionIcon.removeClass(questionIcon.data('icon-active')).addClass(questionIcon.data('icon'));
+                                    console.log("\nTest close "+questionIcon.data('icon'));
+                                } else {
+                                    $(self).addClass('active');
+                                    var target = $(this).data('target');
+                                    if ($(this).data('animated')) {
+                                        $(target).addClass($(this).data('animated'));
+                                    }
+                                    var questionIcon = $(this).find('.panel-title i');
+                                    questionIcon.addClass(questionIcon.data('icon-active')).removeClass(questionIcon.data('icon'));
+                                    if ($(self).data('color-active')) {
+                                        $(self).find('a').eq(0).css("color", $(self).data('color-active'));
+                                    }
+                                    if ($(self).data('bg-color-active')) {
+                                        $(self).css("background-color", $(self).data('bg-color-active'));
+                                    }
+                                    console.log("\nTest active "+questionIcon.data('icon-active'));
+                                }
+                            });
+                            if(0 == panel.find('.panel-collapse').eq(0).height() ) {
+                                panel.find('.panel-collapse').eq(0).removeClass('in');
+                            }
+                        });
+                        var self1 = '';
+                        $("#faqpage<?php echo $blockId; ?> .panel-heading").hover(function () {
+                            self1 = $(this);
+                            if (!$(this).hasClass('active')) {
+                                if ($(this).data('color-active')) {
+                                    $(this).find('a').eq(0).css("color", $(this).data('color-active'));
+                                }
+                                if ($(this).data('bg-color-active')) {
+                                    $(this).css("background-color", $(this).data('bg-color-active'));
+                                }
+                            }
+                        }, function () {
+                            if (!$(this).hasClass('active')) {
+                                if ($(self1).data('color')) {
+                                    $(self1).find('a').css("color", $(self1).data('color'));
+                                } else {
+                                    $(self1).find('a').css("color", "");
+                                }
+                                if ($(self1).data('bg-color')) {
+                                    $(self1).css("background-color", $(self1).data('bg-color'));
+                                } else {
+                                    $(self1).css("background-color", "");
+                                }
+                            }
+                            self1 = '';
+                        });
+                    });
+                });
+            </script>
+        <?php } ?>
+    </div>
+    <?php if ($show_toolbarbottom && ($layout == 1 || $layout == 2) && !$isSearch && $toolbarHtml) { ?>
+        <div class="faq-toolbar toolbar">
+            <?php echo $toolbarHtml; ?>
+        </div>
+    <?php } ?>
+    <?php if (!$isSearch) { ?>
+        </div>
+    <?php } ?>

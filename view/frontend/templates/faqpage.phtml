@@ -1,0 +1,673 @@
+<?php
+
+$helper             = $this->helper("Lof\Faq\Helper\Data");
+$show_toolbartop    = $helper->getConfig("faq_page/show_toolbartop");
+$show_toolbarbottom = $helper->getConfig("faq_page/show_toolbarbottom");
+$showAuthor         = $helper->getConfig("faq_page/questionlist_showauthor");
+$showDate           = $helper->getConfig("faq_page/questionlist_showdate");
+$showCat            = $helper->getConfig("faq_page/questionlist_showcat");
+$showDescCat        = $helper->getConfig("faq_page/show_desc_cat");
+$column             = $helper->getConfig("faq_page/column");
+$readMoreLink       = $helper->getConfig("faq_page/showreadmorelink");
+$readMoreChar       = (int)$helper->getConfig("faq_page/readmore_char");
+$column             = (int)$column?$column:3;
+$collection         = $this->getCollection();
+$total              = 0;
+$catCollection      = $this->getQuestionCategories();
+$itemsperpage       = (int)$helper->getConfig('faq_page/item_per_page');
+$isSearch           = $this->getData('is_search');
+$productIds         = '';
+if($collection){
+	$total         = $collection->count();
+}
+
+$title_size_default           = $helper->getConfig('faq_page/title_size');
+$title_color_default          = $helper->getConfig('faq_page/title_color');
+$title_color_active_default   = $helper->getConfig('faq_page/title_color_active');
+$title_bg_default             = $helper->getConfig('faq_page/title_bg');
+$title_bg_active_default      = $helper->getConfig('faq_page/title_bg_active');
+$border_width_default         = $helper->getConfig('faq_page/border_width');
+$title_border_color_default   = $helper->getConfig('faq_page/title_border_color');
+$title_border_radius_default  = $helper->getConfig('faq_page/title_border_radius');
+$body_size_default            = $helper->getConfig('faq_page/body_size');
+$body_color_default           = $helper->getConfig('faq_page/body_color');
+$body_bg_default              = $helper->getConfig('faq_page/body_bg');
+$question_margin_default      = $helper->getConfig('faq_page/question_margin');
+$question_icon_default        = $helper->getConfig('faq_page/question_icon');
+$question_active_icon_default = $helper->getConfig('faq_page/question_active_icon');
+$animation_class_default      = $helper->getConfig('faq_page/animation_class');
+$animation_speed_default      = $helper->getConfig('faq_page/animation_speed');
+$enable_question_link      = $helper->getConfig('faq_page/enable_question_link');
+if(!isset($layout)){
+	$layout  = $helper->getConfig("faq_page/layout_type");
+}?>
+<?php if($isSearch && $total == 0){ ?>
+<?php echo __('Your search returns no results'); ?>
+<?php } ?>
+
+<?php if($isSearch && $total){ ?>
+<span id="faqsearch-result"><?php echo __('%1 keywords matches', $total); ?></span>
+<?php } ?>
+<?php if(!$isSearch){ ?>
+<button class="faq-backpage"><?php echo __('Back to FAQ page') ?></button>
+<?php } ?>
+<div class="faq-results"></div>
+<?php if(!$isSearch){ ?>
+<div class="lof-faq">
+	<?php } ?>
+	<?php echo $this->getChildHtml('questions_featured'); ?>
+	
+	<?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
+	<?php if($show_toolbartop && ($layout == 1 || $layout == 2) && $isSearch && $toolbarHtml){ ?>
+	<div class="faq-toolbar toolbar">
+		<?php echo $toolbarHtml; ?>
+	</div>
+	<?php } ?>
+	<div id="faqpage" class="faq<?php echo $layout ?> question-list question-list<?php echo $layout ?> faqcat-block">
+		
+		<?php // LIST, GRID ?>
+		<?php
+		$i = 1;
+		$x = 0;
+		?>
+		<?php if($layout==1 || $layout==2){ ?>
+		<?php foreach ($collection as $_question) { ?>
+
+		<?php
+		$title_size = $title_color = $title_color_active = $title_bg = $title_bg_active = $border_width = $title_border_color = $title_border_radius = $body_size = $body_color = $body_bg = $question_margin = $question_icon = $question_active_icon = $animation_class = $animation_speed = '';
+
+			$title_size           = $_question->getData('title_size');
+			$title_color          = $_question->getData('title_color');
+			$title_color_active   = $_question->getData('title_color_active');
+			$title_bg             = $_question->getData('title_bg');
+			$title_bg_active      = $_question->getData('title_bg_active');
+			$border_width         = $_question->getData('border_width');
+			$title_border_color   = $_question->getData('title_border_color');
+			$title_border_radius  = $_question->getData('title_border_radius');
+			$body_size            = $_question->getData('body_size');
+			$body_color           = $_question->getData('body_color');
+			$body_bg              = $_question->getData('body_bg');
+			$question_margin      = $_question->getData('question_margin');
+			$question_icon        = $_question->getData('question_icon');
+			$question_active_icon = $_question->getData('question_active_icon');
+			$animation_class      = $_question->getData('animation_class');
+			$animation_speed      = $_question->getData('animation_speed');
+			if(!$title_size) {
+				$title_size = $title_size_default;
+			}
+			if(!$title_color) {
+				$title_color = $title_color_default;
+			}
+			if(!$title_color_active) {
+				$title_color_active = $title_color_active_default;
+			}
+			if(!$title_bg) {
+				$title_bg = $title_bg_default;
+			}
+			if(!$title_bg_active) {
+				$title_bg_active = $title_bg_active_default;
+			}
+			if(!$border_width) {
+				$border_width = $border_width_default;
+			}
+			if(!$title_border_color) {
+				$title_border_color = $title_border_color_default;
+			}
+			if(!$title_border_radius) {
+				$title_border_radius = $title_border_radius_default;
+			}
+			if(!$body_size) {
+				$body_size = $body_size_default;
+			}
+			if(!$body_color) {
+				$body_color = $body_color_default;
+			}
+			if(!$body_bg) {
+				$body_bg = $body_bg_default;
+			}
+			if(!$question_margin) {
+				$question_margin = $question_margin_default;
+			}
+			if(!$question_icon) {
+				$question_icon = $question_icon_default;
+			}
+			if(!$question_active_icon) {
+				$question_active_icon = $question_active_icon_default;
+			}
+			if(!$animation_class) {
+				$animation_class = $animation_class_default;
+			}
+			if(!$animation_speed) {
+				$animation_speed = $animation_speed_default;
+			}
+
+			$titleStyle = $titleAnchorStyle = $bodyStyle = $titleAttr ='';
+			if($title_color_active) $titleAttr      .= ' data-color-active = "' . $title_color_active . '"';
+			if($title_bg_active) $titleAttr         .= ' data-bg-color-active = "' . $title_bg_active . '"';
+			if($title_color) $titleAttr             .= ' data-color = "' . $title_color . '"';
+			if($title_bg) $titleAttr                .= ' data-bg-color = "' . $title_bg . '"';
+			if((int)$title_size) $titleAnchorStyle  .= 'font-size:' . (int)$title_size . 'px;';
+			if($title_color) $titleAnchorStyle      .= 'color:' . $title_color . ';';
+			if($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+			if($title_bg) $titleStyle               .= 'background-color:' . $title_bg . ';';
+			if($border_width) $titleStyle           .= 'border-width:' . (int)$border_width . 'px;';
+			if($title_border_color) $titleStyle     .= 'border-color:' . $title_border_color . ';';
+			if($title_border_radius) $titleStyle    .= 'border-radius:' . $title_border_radius . ';';
+			if($titleStyle) $titleStyle             = 'style="' . $titleStyle . '"';
+			if($question_margin) $question_margin   = 'style="margin-bottom: ' . $question_margin . 'px;"';
+			if($body_size) $bodyStyle               .= 'font-size: ' . (int)$body_size . 'px;';
+			if($body_color) $bodyStyle              .= 'color: ' . $body_color . ';';
+			if($body_bg) $bodyStyle                 .= 'background-color: ' . $body_bg . ';';
+			if($bodyStyle) $bodyStyle               = 'style="' . $bodyStyle . '"';
+		?>
+
+
+
+		<?php $blockId = rand() . time(); ?>
+
+		<?php 
+		$question_link = 'javascript:void(0);';
+		$question_url = $helper->getQuestionUrl($_question);
+		if($enable_question_link){
+			$question_link = $question_url;
+		}
+		?>
+
+		<?php if($layout==2){ ?>
+		<?php if( $column == 1 || $x%$column == 0 || $x%$column == 0){ ?>
+		<div class="row">
+			<?php } ?>
+			<div class="col-lg-<?php echo 12/$column ?> col-md-<?php echo 12/$column ?> col-sm-12 col-xs-12">
+				<?php } ?>
+				<div class="panel">
+					<div class="panel-heading collapsed" data-animated="<?php echo  'animated ' . $animation_class ?>" data-parent="#faqcat-questions<?php echo $_question->getId() ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+						<h4 class="panel-title">
+							<?php if($question_icon){ ?>
+							<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+							<?php } ?>
+							<a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link; ?>"><?php echo $_question->getTitle() ?></a>
+						</h4>
+					</div>
+					<?php if(!$enable_question_link){ ?>
+					<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+						<div class="panel-body" <?php echo $bodyStyle; ?>>
+							<?php $answer = $_question->getAnswer() ?>
+							<?php if($readMoreLink && $answer!=''){ ?>
+							<?php if($readMoreChar){ ?>
+							<?php echo $helper->subString($answer, $readMoreChar); ?>
+							<?php if(strlen($answer)>$readMoreChar){ ?>
+							<a href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer; ?>
+							<a href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer ?>
+							<?php } ?>
+							<div class="question-meta">
+								<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+								<span class="post-author">
+									<?php echo __('Created by %1', $authorName); ?>
+								</span>
+								<?php } ?>
+								<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+								<span class="post-date">
+									<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+								</span>
+								<?php } ?>
+								<?php if($showCat){ ?>
+								<span class="post-categories">
+									<?php echo __('Published in: ') ?>
+									<?php $categories = $_question->getQuestionCategories(); ?>
+									<?php foreach ($categories as $k => $v) { ?>
+									<a href="<?php echo $helper->getCategoryUrl($v)  ?>" title="<?php echo $block->escapeHtml($v['title']); ?>"><?php echo $block->escapeHtml($v['title']); ?></a>
+									<?php if(isset($categories[$k+1])) echo __(','); ?>
+									<?php } ?>
+								</span>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+				</div>
+				<?php if($layout==2){ ?>
+			</div>
+			<?php if( $column == 1 || ($x+1)%$column == 0 || $i == $total ) {  ?>
+		</div>
+		<?php } ?>
+		<?php } ?>
+		<?php $i++; $x++; ?>
+		<?php } ?>
+		<?php } ?>
+		
+
+
+		<?php // By Category ?>
+		<?php if($layout==3){ ?>
+		<?php
+		if($collection){
+			$productIds = $collection->getAllIds();
+		}
+		?>
+		<?php foreach ($catCollection as $_cat) { ?>
+		<?php $catQuestions = $this->getQuestionByCategory($_cat->getId(), $productIds); ?>
+		<?php if($isSearch && $catQuestions->count()==0) continue ?>
+		<div id="faqcat-<?php echo $_cat->getId() ?>" class="faqcat-block">
+			<a href="<?php echo $helper->getCategoryUrl($_cat); ?>">
+			<?php
+			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
+			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
+			?>
+			<h3 class="faqcat-title" <?php echo $catTitleStyle ?> title="<?php echo $_cat->getTitle() ?>">
+				<i class="line" <?php if($catTitleStyle){ ?>style="border-bottom-color: <?php echo ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color'); ?>"<?php } ?>></i>
+				<i class="fa <?php echo $_cat->getData('cat_icon'); ?>" <?php echo $catTitleStyle ?>></i>
+				<small class="pull-right"><i class="fa fa-hdd-o fa-fw"></i><?php echo $catQuestions->getSize(); ?></small>
+				<?php echo $_cat->getTitle() ?>
+			</h3>
+			</a>
+			<?php if($description = $_cat->getDescription()){ ?>
+			<div class="faqcat-desc"><?php echo $description ?></div>
+			<?php } ?>
+			<div class="faqcat-posts" id="faqcat-questions<?php echo $_cat->getId() ?>" >
+				<?php if($catQuestions && $catQuestions->count()) { ?>
+				<?php
+					$title_size = $title_color = $title_color_active = $title_bg = $title_bg_active = $border_width = $title_border_color = $title_border_radius = $body_size = $body_color = $body_bg = $question_margin = $question_icon = $question_active_icon = $animation_class = $animation_speed = '';
+
+					$title_size           = $_cat->getData('title_size');
+					$title_color          = $_cat->getData('title_color');
+					$title_color_active   = $_cat->getData('title_color_active');
+					$title_bg             = $_cat->getData('title_bg');
+					$title_bg_active      = $_cat->getData('title_bg_active');
+					$border_width         = $_cat->getData('border_width');
+					$title_border_color   = $_cat->getData('title_border_color');
+					$title_border_radius  = $_cat->getData('title_border_radius');
+					$body_size            = $_cat->getData('body_size');
+					$body_color           = $_cat->getData('body_color');
+					$body_bg              = $_cat->getData('body_bg');
+					$question_margin      = $_cat->getData('question_margin');
+					$question_icon        = $_cat->getData('question_icon');
+					$question_active_icon = $_cat->getData('question_active_icon');
+					$animation_class      = $_cat->getData('animation_class');
+					$animation_speed      = $_cat->getData('animation_speed');
+
+					if(!$title_size) {
+						$title_size = $title_size_default;
+					}
+					if(!$title_color) {
+						$title_color = $title_color_default;
+					}
+					if(!$title_color_active) {
+						$title_color_active = $title_color_active_default;
+					}
+					if(!$title_bg) {
+						$title_bg = $title_bg_default;
+					}
+					if(!$title_bg_active) {
+						$title_bg_active = $title_bg_active_default;
+					}
+					if(!$border_width) {
+						$border_width = $border_width_default;
+					}
+					if(!$title_border_color) {
+						$title_border_color = $title_border_color_default;
+					}
+					if(!$title_border_radius) {
+						$title_border_radius = $title_border_radius_default;
+					}
+					if(!$body_size) {
+						$body_size = $body_size_default;
+					}
+					if(!$body_color) {
+						$body_color = $body_color_default;
+					}
+					if(!$body_bg) {
+						$body_bg = $body_bg_default;
+					}
+					if(!$question_margin) {
+						$question_margin = $question_margin_default;
+					}
+					if(!$question_icon) {
+						$question_icon = $question_icon_default;
+					}
+					if(!$question_active_icon) {
+						$question_active_icon = $question_active_icon_default;
+					}
+					if(!$animation_class) {
+						$animation_class = $animation_class_default;
+					}
+					if(!$animation_speed) {
+						$animation_speed = $animation_speed_default;
+					}
+
+					$titleStyle                             = $titleAnchorStyle = $bodyStyle = $titleAttr ='';
+					if($title_color_active) $titleAttr      .= ' data-color-active = "' . $title_color_active . '"';
+					if($title_bg_active) $titleAttr         .= ' data-bg-color-active = "' . $title_bg_active . '"';
+					if($title_color) $titleAttr             .= ' data-color = "' . $title_color . '"';
+					if($title_bg) $titleAttr                .= ' data-bg-color = "' . $title_bg . '"';
+					if((int)$title_size) $titleAnchorStyle  .= 'font-size:' . (int)$title_size . 'px;';
+					if($title_color) $titleAnchorStyle      .= 'color:' . $title_color . ';';
+					if($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+					if($title_bg) $titleStyle               .= 'background-color:' . $title_bg . ';';
+					if($border_width) $titleStyle           .= 'border-width:' . (int)$border_width . 'px;';
+					if($title_border_color) $titleStyle     .= 'border-color:' . $title_border_color . ';';
+					if($title_border_radius) $titleStyle    .= 'border-radius:' . $title_border_radius . ';';
+					if($titleStyle) $titleStyle             = 'style="' . $titleStyle . '"';
+					if($question_margin) $question_margin   = 'style="margin-bottom: ' . $question_margin . 'px;"';
+					if($body_size) $bodyStyle               .= 'font-size: ' . (int)$body_size . 'px;';
+					if($body_color) $bodyStyle              .= 'color: ' . $body_color . ';';
+					if($body_bg) $bodyStyle                 .= 'background-color: ' . $body_bg . ';';
+					if($bodyStyle) $bodyStyle               = 'style="' . $bodyStyle . '"';
+				?>
+				<?php foreach ($catQuestions as $_question) { ?>
+				<?php $blockId = rand() . time(); ?>
+				<?php 
+				$question_link = 'javascript:void(0);';
+				$question_url = $helper->getQuestionUrl($_question);
+				if($enable_question_link){
+					$question_link = $question_url;
+				}
+				?>
+				<div class="panel">
+					<div class="panel-heading collapsed" data-animated="<?php echo  'animated ' . $animation_class ?>" data-parent="#faqcat-questions<?php echo $_cat->getId() ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+						<h4 class="panel-title">
+							<?php if($question_icon){ ?>
+							<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+							<?php } ?>
+							<a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link;?>"><?php echo $_question->getTitle() ?></a>
+						</h4>
+					</div>
+					<?php if(!$enable_question_link){ ?>
+					<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+						<div class="panel-body" <?php echo $bodyStyle; ?>>
+							<?php $answer = $_question->getAnswer() ?>
+							<?php if($readMoreLink){ ?>
+							<?php if($readMoreChar){ ?>
+							<?php echo $helper->subString($answer, $readMoreChar); ?>
+							<?php if(strlen($answer)>$readMoreChar){ ?>
+							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer; ?>
+							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer ?>
+							<?php } ?>
+							<div class="question-meta">
+								<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+								<?php echo __('Created by %1', $authorName); ?>
+								<?php } ?>
+								<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+								<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+				</div>
+				<?php } ?>
+				<?php } ?>
+			</div>
+		</div>
+		<?php } ?>
+		<?php } ?>
+
+
+
+		<?php // By Grid Category ?>
+		<?php  if($layout == 4) { ?>
+		<?php $a = 0; ?>
+		<?php $total = $catCollection->getSize(); ?>
+		<?php
+		if($collection){
+			$productIds = $collection->getAllIds();
+		}
+		?>
+		<?php foreach ($catCollection as $_cat) { ?>
+		<?php $catQuestions = $this->getQuestionByCategory($_cat->getId(), $productIds); ?>
+		<?php  if($isSearch && $catQuestions->count()==0) continue; ?>
+		<?php if($a%$column == 0 ) {
+			echo "<div class='row'>";
+		}
+		?>
+		<div id="faqcat-<?php echo $_cat->getId() ?>" class="faqcat-block col-md-<?php echo 12/$column; ?>">
+			<a href="<?php echo $helper->getCategoryUrl($_cat); ?>">
+			
+			<?php
+			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
+			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
+			?>
+			<h3 class="faqcat-title" <?php echo $catTitleStyle ?> title="<?php echo $_cat->getTitle() ?>">
+				<i class="line" <?php if($catTitleStyle){ ?>style="border-bottom-color: <?php echo ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color'); ?>"<?php } ?>></i>
+				<i class="fa <?php echo $_cat->getData('cat_icon'); ?>"></i>
+				<small class="pull-right"><i class="fa fa-hdd-o fa-fw"></i><?php echo $catQuestions->getSize(); ?></small>
+				<?php echo $_cat->getTitle() ?>
+			</h3>
+			</a>
+
+			<?php if($showDescCat){ ?>
+			<div class="faqcat-desc"><?php echo $_cat->getDescription();?></div>
+			<?php } ?>
+			<div class="faqcat-posts" id="faqcat-questions<?php echo $_cat->getId() ?>" >
+				<?php if($catQuestions->count()) { ?>
+				<?php
+					$title_size = $title_color = $title_color_active = $title_bg = $title_bg_active = $border_width = $title_border_color = $title_border_radius = $body_size = $body_color = $body_bg = $question_margin = $question_icon = $question_active_icon = $animation_class = $animation_speed = '';
+					$title_size           = $_cat->getData('title_size');
+					$title_color          = $_cat->getData('title_color');
+					$title_color_active   = $_cat->getData('title_color_active');
+					$title_bg             = $_cat->getData('title_bg');
+					$title_bg_active      = $_cat->getData('title_bg_active');
+					$border_width         = $_cat->getData('border_width');
+					$title_border_color   = $_cat->getData('title_border_color');
+					$title_border_radius  = $_cat->getData('title_border_radius');
+					$body_size            = $_cat->getData('body_size');
+					$body_color           = $_cat->getData('body_color');
+					$body_bg              = $_cat->getData('body_bg');
+					$question_margin      = $_cat->getData('question_margin');
+					$question_icon        = $_cat->getData('question_icon');
+					$question_active_icon = $_cat->getData('question_active_icon');
+					$animation_class      = $_cat->getData('animation_class');
+					$animation_speed      = $_cat->getData('animation_speed');
+
+					$titleStyle                             = $titleAnchorStyle = $bodyStyle = $titleAttr ='';
+					if($title_color_active) $titleAttr      .= ' data-color-active = "' . $title_color_active . '"';
+					if($title_bg_active) $titleAttr         .= ' data-bg-color-active = "' . $title_bg_active . '"';
+					if($title_color) $titleAttr             .= ' data-color = "' . $title_color . '"';
+					if($title_bg) $titleAttr                .= ' data-bg-color = "' . $title_bg . '"';
+					if((int)$title_size) $titleAnchorStyle  .= 'font-size:' . (int)$title_size . 'px;';
+					if($title_color) $titleAnchorStyle      .= 'color:' . $title_color . ';';
+					if($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+					if($title_bg) $titleStyle               .= 'background-color:' . $title_bg . ';';
+					if($border_width) $titleStyle           .= 'border-width:' . (int)$border_width . 'px;';
+					if($title_border_color) $titleStyle     .= 'border-color:' . $title_border_color . ';';
+					if($title_border_radius) $titleStyle    .= 'border-radius:' . $title_border_radius . ';';
+					if($titleStyle) $titleStyle             = 'style="' . $titleStyle . '"';
+					if($question_margin) $question_margin   = 'style="margin-bottom: ' . $question_margin . 'px;"';
+					if($body_size) $bodyStyle               .= 'font-size: ' . (int)$body_size . 'px;';
+					if($body_color) $bodyStyle              .= 'color: ' . $body_color . ';';
+					if($body_bg) $bodyStyle                 .= 'background-color: ' . $body_bg . ';';
+					if($bodyStyle) $bodyStyle               = 'style="' . $bodyStyle . '"';
+				?>
+				<?php foreach ($catQuestions as $_question) { ?>
+				<?php $blockId = rand() . time(); ?>
+				<?php 
+				$question_link = 'javascript:void(0);';
+				$question_url = $helper->getQuestionUrl($_question);
+				if($enable_question_link){
+					$question_link = $question_url;
+				}
+				?>
+				<div class="panel">
+					<div class="panel-heading collapsed" data-animated="<?php echo  'animated ' . $animation_class ?>" data-parent="#faqcat-questions<?php echo $_cat->getId() ?>" data-toggle="collapse" data-target="#question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="question-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+						<h4 class="panel-title">
+							<?php if($question_icon){ ?>
+							<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+							<?php } ?>
+							<a <?php echo $titleAnchorStyle ?> href="<?php echo $question_link; ?>"><?php echo $_question->getTitle() ?></a>
+						</h4>
+					</div>
+					<?php if(!$enable_question_link){ ?>
+					<div id="question<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+						<div class="panel-body" <?php echo $bodyStyle; ?>>
+							<?php $answer = $_question->getAnswer() ?>
+							<?php if($readMoreLink){ ?>
+							<?php if($readMoreChar){ ?>
+							<?php echo $helper->subString($answer, $readMoreChar); ?>
+							<?php if(strlen($answer)>$readMoreChar){ ?>
+							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer; ?>
+							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
+							<?php } ?>	
+							<?php }else{ ?>
+							<?php echo $answer ?>
+							<?php } ?>
+							<div class="question-meta">
+								<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+								<?php echo __('Created by %1', $authorName); ?>
+								<?php } ?>
+								<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+								<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+								<?php } ?>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+				</div>
+				<?php } ?>
+				<?php } ?>
+			</div>
+		</div>
+		<?php  if(($a+1)%$column == 0 || ($a+1) == $total) {
+			echo "</div>";
+		} $a++;    ?>
+		<?php } ?>
+		<?php } ?>
+		<?php if($layout == 5) { ?>
+		<?php $x = 0; ?>
+		<?php $total = $catCollection->getSize(); ?>
+		<?php
+		if($collection){
+			$productIds = $collection->getAllIds();
+		}
+		?>
+		<?php foreach ($catCollection as $_cat) { ?>
+			<?php $catQuestions = $this->getQuestionByCategory($_cat->getId(), $productIds); ?>
+			<?php  if($isSearch && $catQuestions->count()==0) continue; 
+			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
+			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
+			?>
+			<?php if( $column == 1 || $x%$column == 0 || $x%$column == 0){ ?>
+			<div class="row">
+			<?php } ?>
+
+			<div class="col-md-<?php echo 12/$column; ?> col-xs-12">
+				<div class="faq-category">
+					<a title="<?php echo $_cat->getTitle(); ?>" href="<?php echo $helper->getCategoryUrl($_cat)  ?>" >
+						<div class="faq-category-icon">
+							<i class="fa <?php echo $_cat->getData('cat_icon'); ?>"></i>
+						</div>
+						<div class="faq-category-title">
+							<h3  <?php echo $catTitleStyle ?> title="<?php echo $_cat->getTitle() ?>">
+								<i class="line" <?php if($catTitleStyle){ ?>style="border-bottom-color: <?php echo ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color'); ?>"<?php } ?>></i>
+								<small class="pull-right"><i class="fa fa-hdd-o fa-fw"></i><?php echo $catQuestions->getSize(); ?></small>
+								<?php echo $_cat->getTitle() ?>
+							</h3>
+							<?php if($showDescCat){ ?>
+							<div class="faqcat-desc"><?php echo $_cat->getDescription();?></div>
+							<?php } ?>
+						</div>	
+					</a>	
+				</div>
+			</div>
+
+			<?php if( $column == 1 || ($x+1)%$column == 0 || $x == ($total-1) ) {  ?>
+				</div>
+			<?php } ?>
+			<?php $x++; ?>
+		<?php } ?>
+		<?php } ?>
+	</div>
+	<?php if(!$isSearch && !$enable_question_link){ ?>
+	<script>
+		require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function($){
+			jQuery(document).ready(function($) {
+				$('#faqpage .row').each(function(index, el) {
+					var h = $(this).height();
+					$(this).find('.faq-category > a').css('height',h+'px');
+				});
+				$(document).on("click", ".faq<?php echo $layout ?> .panel-heading", function(){
+					var parent = $(this).parents('.faqcat-block');
+					var self = $(this);
+					$(parent).find('.panel-heading').each(function(i,e){
+						var questionIcon = $(this).find('.panel-title i');
+						
+						if(self.attr('id')!= $(e).attr('id') || $(this).hasClass('active')){
+							$(this).removeClass('active');
+							if($(this).data('color')){
+								$(this).find('a').css("color",$(this).data('color'));
+							}else{
+								$(this).find('a').css("color","");
+							}
+							if($(this).data('bg-color')){
+								$(this).css("background-color",$(this).data('bg-color'));
+							}else{
+								$(this).css("background-color","");
+							}
+							questionIcon.removeClass(questionIcon.data('icon-active')).addClass(questionIcon.data('icon'));
+						}else{
+							$(self).addClass('active');
+							var target = $(this).data('target');
+							if($(this).data('animated')){
+								$(target).addClass	($(this).data('animated'));
+							}
+							questionIcon.addClass(questionIcon.data('icon-active')).removeClass(questionIcon.data('icon'));
+							if($(self).data('color-active')){
+								$(self).find('a').eq(0).css("color",$(self).data('color-active'));
+							}
+							if($(self).data('bg-color-active')){
+								$(self).css("background-color",$(self).data('bg-color-active'));
+							}
+						}
+					});
+				});
+				var self1 = '';
+				$(".faq<?php echo $layout ?> .panel-heading").hover(function(){
+					self1 = $(this);
+					if(!$(this).hasClass('active')){
+						if($(this).data('color-active')){
+							$(this).find('a').eq(0).css("color",$(this).data('color-active'));
+						}
+						if($(this).data('bg-color-active')){
+							$(this).css("background-color",$(this).data('bg-color-active'));
+						}
+					}
+				}, function(){
+					if(!$(this).hasClass('active')){
+						if($(self1).data('color')){
+							$(self1).find('a').css("color",$(self1).data('color'));
+						}else{
+							$(self1).find('a').css("color","");
+						}
+						if($(self1).data('bg-color')){
+							$(self1).css("background-color",$(self1).data('bg-color'));
+						}else{
+							$(self1).css("background-color","");
+						}
+					}
+					self1 = '';
+				});	
+			});
+		});
+	</script>
+	<?php } ?>
+	<?php if($show_toolbarbottom && ($layout == 1 || $layout ==2) && !$isSearch && $toolbarHtml){ ?>
+	<div class="faq-toolbar toolbar">
+		<?php echo $toolbarHtml; ?>
+	</div>
+	<?php } ?>
+	<?php if(!$isSearch){ ?>
+</div>
+<?php } ?>

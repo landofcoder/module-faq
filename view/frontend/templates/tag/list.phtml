@@ -1,0 +1,35 @@
+<?php
+$helper            = $this->helper("Lof\Faq\Helper\Data");
+$tags              = $this->getData('tags');
+$showTagblock      = $helper->getConfig('sidebar/show_tagblock');
+$title             = $helper->getConfig('sidebar/tagblock_title');
+$show_tagcountdown = $helper->getConfig("sidebar/show_tagcountdown"); 
+$tag_cloud         = $helper->getConfig("sidebar/tag_cloud"); 
+?>
+
+<?php if(count($tags)>0 && $showTagblock){ ?>
+	<div class="faqcategory-sidebar faqlike-sidebar block">
+		<?php if($title){ ?>
+			<div class="block-title">
+				<?php echo $title ?>
+			</div>
+			<?php } ?>
+			<div class="block-content faq-widget-content">
+				<ul class="postags">
+					<?php foreach ($tags as $k => $v) { ?>
+						<?php
+						$class = '';
+						if($tag_cloud) $class = 'class="tag-count-' . $v['count'] . '"';
+						?>
+						<?php if(trim($v['name'])!=''){ ?>
+							<li><a href="<?php echo $helper->getTagUrl($k) ?>" <?php echo $class ?> title="<?php echo $v['name'] ?>"><?php echo $v['name'] ?>
+								<?php if($show_tagcountdown){ ?>
+									<?php } ?>
+								</a>
+								<span>(<?php echo $v['count'] ?>)</span></li>
+								<?php } ?>
+								<?php } ?>
+							</ul>
+						</div>
+					</div>
+					<?php } ?>

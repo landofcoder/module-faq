@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<loffaq>
+			<general_settings>
+				<enable>1</enable>
+				<route>faq</route>
+				<question_route>question</question_route>
+			</general_settings>
+			<faq_page>
+				<layout_type>3</layout_type>
+				<enable_question_link>0</enable_question_link>
+				<item_per_page>5</item_per_page>
+				<show_breadcrumbs>1</show_breadcrumbs>
+				<show_toolbartop>0</show_toolbartop>
+				<show_toolbarbottom>1</show_toolbarbottom>
+				<questionlist_showauthor>1</questionlist_showauthor>
+				<questionlist_showdate>1</questionlist_showdate>
+				<questionlist_showcat>1</questionlist_showcat>
+				<showreadmorelink>1</showreadmorelink>
+				<readmore_char>200</readmore_char>
+				<searchform_enable>1</searchform_enable>
+				<page_title>FAQ</page_title>
+				<page_layout>2columns-left</page_layout>
+				<meta_description>Faq Description</meta_description>
+				<meta_keywords>Faq Keywords</meta_keywords>
+				<featuredblock>0</featuredblock>
+				<number_featured_questions>8</number_featured_questions>
+				<latestblock>0</latestblock>
+				<number_latest_questions>8</number_latest_questions>
+				<featuredblock>0</featuredblock>
+			</faq_page>
+			<category_page>
+				<enable_question_link>0</enable_question_link>
+				<item_per_page>15</item_per_page>
+				<show_breadcrumbs>1</show_breadcrumbs>
+				<show_toolbartop>1</show_toolbartop>
+				<show_toolbarbottom>1</show_toolbarbottom>
+				<showauthor>1</showauthor>
+				<showdate>1</showdate>
+				<showcat>1</showcat>
+				<showreadmorelink>1</showreadmorelink>
+				<readmore_char>500</readmore_char>
+				<searchform_enable>1</searchform_enable>
+			</category_page>
+			<question_page>
+				<showauthor>1</showauthor>
+				<showdate>1</showdate>
+				<showcat>1</showcat>
+				<show_likedislike>1</show_likedislike>
+				<enable_networks>1</enable_networks>
+				<networks>twitter,facebook,googleplus,instagram,linkedin,pinterest</networks>
+			</question_page>
+			<faq_productpage>
+				<enable>1</enable>
+				<layout_type>1</layout_type>
+				<show_toolbartop>1</show_toolbartop>
+				<show_toolbarbottom>1</show_toolbarbottom>
+				<showauthor>1</showauthor>
+				<showdate>1</showdate>
+				<showcat>1</showcat>
+				<showreadmorelink>1</showreadmorelink>
+				<readmore_char>500</readmore_char>
+				<enable_popup>1</enable_popup>
+				<enable_recaptcha></enable_recaptcha>
+			</faq_productpage>
+			<sidebar>
+				<show_tagblock>1</show_tagblock>
+				<tagblock_title>TAGS</tagblock_title>
+				<tags_per_page>5</tags_per_page>
+			</sidebar>
+			<email_settings>
+				<email_receive>landofcoder@gmail.com</email_receive>
+			</email_settings>
+			<recaptcha_settings>
+				<publickey>6LfeIiATAAAAAFzDiibkfiq6K5j3eT1UaVyMaZXy</publickey>
+				<privatekey>6LfeIiATAAAAAB2vywRib1pR_enA_7OaYDpheZfL</privatekey>
+			</recaptcha_settings>
+		</loffaq>
+	</default>
+</config>

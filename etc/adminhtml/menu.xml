@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Landofcoder
+ * 
+ * NOTICE OF LICENSE
+ * 
+ * This source file is subject to the landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * http://landofcoder.com/license
+ * 
+ * DISCLAIMER
+ * 
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ * 
+ * @category   Landofcoder
+ * @package    Lof_FAQ
+ * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
+ * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Lof_Faq::faq" title="FAQ" module="Lof_Faq" sortOrder="15" resource="Lof_Faq::question" parent="Lof_All::lof_all"/> 
+		<add id="Lof_Faq::question_new" title="Add New Question" module="Lof_Faq" sortOrder="20" parent="Lof_Faq::faq" action="loffaq/question/new" resource="Lof_Faq::question_edit"/>
+        <add id="Lof_Faq::question_manage" title="Manage Questions" module="Lof_Faq" sortOrder="30" parent="Lof_Faq::faq" action="loffaq/question/index" resource="Lof_Faq::question"/> 
+		<add id="Lof_Faq::category_new" title="Add New Category" module="Lof_Faq" sortOrder="50" parent="Lof_Faq::faq" action="loffaq/category/new" resource="Lof_Faq::category_edit"/>
+        <add id="Lof_Faq::category_manage" title="Manage Categories" module="Lof_Faq" sortOrder="60" parent="Lof_Faq::faq" action="loffaq/category/index" resource="Lof_Faq::category"/>
+        <add id="Lof_Faq::tag_manage" title="Manage Question Tags" module="Lof_Faq" sortOrder="70" parent="Lof_Faq::faq" action="loffaq/tag/index" resource="Lof_Faq::tag"/> 
+        <add id="Lof_Faq::configuration" title="Settings" module="Lof_Faq" sortOrder="1000" parent="Lof_Faq::faq" action="adminhtml/system_config/edit/section/loffaq" resource="Lof_Faq::config_faq"/> 
+    </menu>
+</config>

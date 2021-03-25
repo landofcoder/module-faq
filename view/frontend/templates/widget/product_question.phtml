@@ -1,0 +1,453 @@
+<?php
+$helper      		= $this->helper("Lof\Faq\Helper\Data");
+$show_toolbartop    = $this->getData("show_toolbartop");
+$show_toolbarbottom = $this->getData("show_toolbarbottom");
+$layout             = $this->getData("layout_type");
+$showAuthor			= $this->getData("showauthor");
+$showDate			= $this->getData("showdate");
+$showCat			= $this->getData("showcat");
+$column			    = $this->getData("column");
+$readMoreLink       = $this->getData("showreadmorelink");
+$readMoreChar       = (int)$this->getData("readmore_char");
+$column 			= (int)$column?$column:3;
+$collection         = $this->getCollection();
+$total 				= $collection->count();
+$blockId 			= rand() . time();
+$catCollection 		= $this->getQuestionCategories();
+$itemsperpage 		= (int)$this->getData('item_per_page');
+$isSearch 			= $this->getData('is_search');
+$total 				= $collection->count();
+$modId 				= rand() . time();
+$product 			= $block->getProduct();
+$enableRecaptcha    = $this->getData("enable_recaptcha");
+$reCaptchaPublicKey = $this->getData("recaptcha_settings/publickey");
+
+$enablePopup    	= $this->getData("enable_popup");
+$enableCategory    	= $this->getData("enable_categories");
+$categories 		= $block->getQuestionCategories();
+$exists_faq			= [];
+?>
+<?php if($enablePopup){ ?>
+<a href="javascript:void(0);" class="btnfancy"><?php echo __('Ask a Question') ?></a>
+<div id="faq-poquestion-widget<?php echo $modId ?>" class="widget-product-question popquestion" style="display: none">
+	<div class="ask-question-form">
+		<div class="faqform-loading"></div>
+		<form action="#" id="faqformwidget<?php echo $modId ?>" name="popup-ask-question-form" method="post" data-mage-init='{"validation":{}}'>
+			<input name="product_id" value="<?php echo $product->getId() ?>" type="hidden">
+			<div class="fieldset">
+				<h2 class="legend"><?php echo __('Ask a Question'); ?><a class="btn-slide" id="fme-faq-btn-slide-close" href="javascript:" style="display: none; float:right;"></a>
+				</h2>
+				<ul class="form-list">
+					<li class="fields">
+						<div class="field">
+							<label for="author_name" class="required"><?php echo __('Name'); ?><em>*</em></label>
+							<div class="input-box">
+								<input name="author_name" id="author_name" title="Customer Name " value="" class="required-entry input-text" type="text">
+							</div>
+						</div>
+						<div class="field">
+							<label for="author_email" class="required"><?php echo __('Email'); ?><em>*</em></label>
+							<div class="input-box">
+								<input name="author_email" id="author_email" title="<?php echo __('Email'); ?>" value="" class="required-entry validate-email input-text" type="text">
+							</div>
+						</div>
+					</li>
+					<?php if( !empty($categories) && $enableCategory){ ?>
+					<li class="fields">
+						<div class="field">
+							<label for="categories" class="required"><?php echo __('Category'); ?><em>*</em></label>
+							<div class="input-box">
+								<select name="categories" id="categories" class="required-entry input-text">
+									<?php foreach ($categories as $_cat) { ?>
+									<option value="<?php echo $_cat->getId() ?>"><?php echo $_cat->getTitle() ?></option>
+									<?php } ?>
+								</select>
+							</div>
+						</div>
+					</li>
+					<?php } ?>
+					<li class="wide">
+						<label for="title" class="required"><?php echo __('Question'); ?><em>*</em></label>
+						<div class="input-box">
+							<textarea name="title" id="title" title="<?php echo __('Question'); ?>" class="required-entry input-text" rows="5"></textarea>
+						</div>
+					</li>
+					<?php if($enableRecaptcha && $reCaptchaPublicKey!=''){ ?>
+					<li class="wide">
+						<div class="field col-sm-12"><div class="g-recaptcha" data-sitekey="<?php echo $reCaptchaPublicKey ?>"></div></div>
+					</li>
+					<?php } ?>	
+				</ul>
+				<button  style="float: right;" type="submit" class="button"><span><span><?php echo __('Submit'); ?></span></span></button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<?php if($enableRecaptcha && $reCaptchaPublicKey!=''){ ?>
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<?php } ?>
+<script type="text/javascript">
+	require([
+		'jquery',
+		'Lof_All/lib/fancybox/jquery.fancybox.pack',
+		'mage/validation'
+		], function($){
+			jQuery(document).ready(function($) {
+				jQuery(".btnfancy").fancybox({
+					'href'   : '#faq-poquestion-widget<?php echo $modId ?>',
+					'titleShow'  : false,
+					'transitionIn'  : 'elastic',
+					'transitionOut' : 'elastic',
+					'minWidth'  : 600,
+				});
+			});
+		});
+	</script>
+
+<?php } ?>
+
+	<?php if($collection->count()){ ?>
+	<div class="lof-faq">
+		<?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
+		<?php if($show_toolbartop && ($layout == 1 || $layout == 2) && $toolbarHtml){ ?>
+		<div class="faq-toolbar toolbar">
+			<?php echo $block->getChildHtml('toolbar'); ?>
+		</div>
+		<?php } ?>
+		<div id="faqpagewidget<?php echo $modId; ?>" class="faq<?php echo $layout ?> question-list">
+
+			<?php // LIST, GRID ?>
+			<?php
+			$i = 1;
+			$x = 0;
+			?>
+			<?php if($layout==1 || $layout==2){ ?>
+			<?php foreach ($collection as $_question) { ?>
+
+			<?php if($layout==2){ ?>
+			<?php if( $column == 1 || $x%$column == 0 || $x%$column == 0){ ?>
+			<div class="row">
+				<?php } ?>
+				<div class="col-lg-<?php echo 12/$column ?> col-md-<?php echo 12/$column ?> col-sm-12 col-xs-12">
+					<?php } ?>
+					<div class="panel">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" data-parent="#faqpagewidget" href="#questionwidget<?php echo $_question->getId() ?>-<?php echo $blockId ?>" class="collapsed"><?php echo $_question->getTitle() ?></a>
+							</h4>
+						</div>
+						<div id="questionwidget<?php echo $_question->getId() ?>-<?php echo $blockId ?>" class="panel-collapse collapse">
+							<div class="panel-body">
+								<?php $answer = $_question->getAnswer(); ?>
+								<?php if($readMoreLink){ ?>
+								<?php if($readMoreChar){ ?>
+								<?php echo $helper->subString($answer, $readMoreChar); ?>
+								<?php if(strlen($answer)>$readMoreChar){ ?>
+								<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+								<?php } ?>	
+								<?php }else{ ?>
+								<?php echo $answer; ?>
+								<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+								<?php } ?>	
+								<?php }else{ ?>
+								<?php echo $answer ?>
+								<?php } ?>
+								<div class="question-meta">
+									<?php if($showCat){ ?>
+									<span class="post-categories">
+										<?php echo __('Published in: ') ?>
+										<?php
+										$categories = $_question->getQuestionCategories();
+										$count = count($categories);
+										?>
+										<?php foreach ($categories as $k => $v) { ?>
+										<a href="<?php echo $helper->getCategoryUrl($v)  ?>" title="<?php echo $block->escapeHtml($v['title']); ?>"><?php echo $block->escapeHtml($v['title']); ?></a>
+										<?php if(isset($categories[$k+1])) echo __(','); ?>
+										<?php } ?>
+									</span>
+									<?php } ?>
+									<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+									<span class="post-author">
+										<?php echo __('Created by: %1', $authorName); ?>
+									</span>
+									<?php } ?>
+									<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+									<span class="post-date">
+										<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+									</span>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php if($layout==2){ ?>
+				</div>
+				<?php if( $column == 1 || ($x+1)%$column == 0 || $i == $total ) {  ?>
+			</div>
+			<?php } ?>
+			<?php } ?>
+			<?php $i++; $x++; ?>
+			<?php } ?>
+			<?php } ?>
+
+			<?php // By Category ?>
+			<?php if($layout==3){ ?>
+			<?php $cats = []; ?>
+			<?php foreach ($catCollection as $_cat) { ?>
+			<?php $cats[$_cat->getId()] = $_cat;
+			$y = 0; ?>
+			<?php foreach ($collection as $_question) { ?>
+			<?php $questionCat = $_question->getQuestionCategories();
+			$catQuestion = [];
+			foreach ($questionCat as $k => $v) {
+				if($v['category_id'] == $_cat->getId()){
+					if($itemsperpage>0 && $y>($itemsperpage-1)) break;
+					$questions = $cats[$_cat->getId()]->getQuestions();
+					$questions[] = $_question;
+					$cats[$_cat->getId()]->setQuestions($questions);
+					$y++;
+				}
+			}
+			?>
+			<?php } ?>
+			<?php } ?>
+			<?php foreach ($cats as $_cat) { ?>
+
+			<?php
+				$title_size = $title_color = $title_color_active = $title_bg = $title_bg_active = $border_width = $title_border_color = $title_border_radius = $body_size = $body_color = $body_bg = $question_margin = $question_icon = $question_active_icon = $animation_class = $animation_speed = '';
+				$title_size           = $_cat->getData('title_size');
+				$title_color          = $_cat->getData('title_color');
+				$title_color_active   = $_cat->getData('title_color_active');
+				$title_bg             = $_cat->getData('title_bg');
+				$title_bg_active      = $_cat->getData('title_bg_active');
+				$border_width         = $_cat->getData('border_width');
+				$title_border_color   = $_cat->getData('title_border_color');
+				$title_border_radius  = $_cat->getData('title_border_radius');
+				$body_size            = $_cat->getData('body_size');
+				$body_color           = $_cat->getData('body_color');
+				$body_bg              = $_cat->getData('body_bg');
+				$question_margin      = $_cat->getData('question_margin');
+				$question_icon        = $_cat->getData('question_icon');
+				$question_active_icon = $_cat->getData('question_active_icon');
+				$animation_class      = $_cat->getData('animation_class');
+				$animation_speed      = $_cat->getData('animation_speed');
+
+				$titleStyle                             = $titleAnchorStyle = $bodyStyle = $titleAttr ='';
+				if($title_color_active) $titleAttr      .= ' data-color-active = "' . $title_color_active . '"';
+				if($title_bg_active) $titleAttr         .= ' data-bg-color-active = "' . $title_bg_active . '"';
+				if($title_color) $titleAttr             .= ' data-color = "' . $title_color . '"';
+				if($title_bg) $titleAttr                .= ' data-bg-color = "' . $title_bg . '"';
+				if((int)$title_size) $titleAnchorStyle  .= 'font-size:' . (int)$title_size . 'px;';
+				if($title_color) $titleAnchorStyle      .= 'color:' . $title_color . ';';
+				if($titleAnchorStyle) $titleAnchorStyle = 'style="' . $titleAnchorStyle . '"';
+				if($title_bg) $titleStyle               .= 'background-color:' . $title_bg . ';';
+				if($border_width) $titleStyle           .= 'border-width:' . (int)$border_width . 'px;';
+				if($title_border_color) $titleStyle     .= 'border-color:' . $title_border_color . ';';
+				if($title_border_radius) $titleStyle    .= 'border-radius:' . $title_border_radius . ';';
+				if($titleStyle) $titleStyle             = 'style="' . $titleStyle . '"';
+				if($question_margin) $question_margin   = 'style="margin-bottom: ' . $question_margin . 'px;"';
+				if($body_size) $bodyStyle               .= 'font-size: ' . (int)$body_size . 'px;';
+				if($body_color) $bodyStyle              .= 'color: ' . $body_color . ';';
+				if($body_bg) $bodyStyle                 .= 'background-color: ' . $body_bg . ';';
+				if($bodyStyle) $bodyStyle               = 'style="' . $bodyStyle . '"';
+			?>
+
+			<?php $catQuestions = $_cat->getQuestions(); $catQuestions=$catQuestions?$catQuestions:[]; ?>
+			<?php if(!$catQuestions || ($catQuestions && count($catQuestions) == 0)) continue; ?>
+			<div id="faqcatwidget-<?php echo $_cat->getId() ?>" class="faqcat-block">
+			<?php $blockId 			= rand() . time(); ?>
+			<a href="<?php echo $helper->getCategoryUrl($_cat); ?>">
+			<?php
+			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
+			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
+			?>
+			<h3 class="faqcat-title" <?php echo $catTitleStyle ?> title="<?php echo $_cat->getTitle() ?>">
+				<i class="line" <?php if($catTitleStyle){ ?>style="border-bottom-color: <?php echo ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color'); ?>"<?php } ?>></i>
+				<i class="fa <?php echo $_cat->getData('cat_icon'); ?>"></i>
+				<small class="pull-right"><i class="fa fa-hdd-o fa-fw"></i><?php echo count($catQuestions); ?></small>
+				<?php echo $_cat->getTitle() ?>
+			</h3>
+			</a>
+				<?php if($description = $_cat->getDescription()){ ?>
+				<div class="faqcat-desc"><?php echo $description ?></div>
+				<?php } ?>
+				<div class="faqcat-posts">
+					<?php if(is_array($catQuestions)) { ?>
+					<?php foreach ($catQuestions as $_question) { ?>
+					<?php 
+						if(!isset($exists_faq[$_question->getId()])) {
+							$exists_faq[$_question->getId()] = $_question->getId();
+						} else {
+							continue;
+						}
+					?>
+					<div class="panel">
+						<div class="panel-heading" data-animated="<?php echo  'animated ' . $animation_class ?>" data-parent="#faqcat-questions<?php echo $_cat->getId() ?>" data-toggle="collapse" data-target="#questionwidget<?php echo $_question->getId() ?>-<?php echo $blockId ?>" id="questionwidget-<?php echo $blockId . $_question->getId() ?>" <?php echo $titleStyle; ?> <?php echo $titleAttr ?>>
+						<h4 class="panel-title">
+							<?php if($question_icon){ ?>
+							<i data-icon="<?php echo $question_icon ?>" data-icon-active="<?php echo $question_active_icon ?>" class="fa <?php echo $question_icon ?>" <?php if($title_color){ ?>style="color:<?php echo $title_color ?>"<?php } ?>></i>
+							<?php } ?>
+							<a <?php echo $titleAnchorStyle ?> href="javascript:void(0);"><?php echo $_question->getTitle() ?></a>
+						</h4>
+					</div>
+					<div id="questionwidget<?php echo $_question->getId() ?>-<?php echo $blockId ?>" <?php if($animation_speed){ ?>style="animation-duration: <?php echo $animation_speed ?>s;-webkit-animation-duration: <?php echo $animation_speed ?>s;"<?php } ?>class="panel-collapse collapse">
+						<div class="panel-body" <?php echo $bodyStyle; ?>>
+								<?php $answer = $_question->getAnswer() ?>
+								<?php if($readMoreLink){ ?>
+								<?php if($readMoreChar){ ?>
+								<?php echo $helper->subString($answer, $readMoreChar); ?>
+								<?php if(strlen($answer)>$readMoreChar){ ?>
+								<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+								<?php } ?>	
+								<?php }else{ ?>
+								<?php echo $answer; ?>
+								<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
+								<?php } ?>	
+								<?php }else{ ?>
+								<?php echo $answer ?>
+								<?php } ?>
+								<div class="question-meta">
+									<?php if($showCat){ ?>
+									<span class="post-categories">
+										<?php echo __('Published in: ') ?>
+										<?php
+										$categories = $_question->getQuestionCategories();
+										$count = count($categories);
+										?>
+										<?php foreach ($categories as $k => $v) { ?>
+										<a href="<?php echo $helper->getCategoryUrl($v)  ?>" title="<?php echo $block->escapeHtml($v['title']); ?>"><?php echo $block->escapeHtml($v['title']); ?></a>
+										<?php if(isset($categories[$k+1])) echo __(','); ?>
+										<?php } ?>
+									</span>
+									<?php } ?>
+									<?php if( ($authorName = $_question->getAuthorName()) && $showAuthor ){ ?>
+									<span class="post-author">
+										<?php echo __('Created by: %1', $authorName); ?>
+									</span>
+									<?php } ?>
+									<?php if($showDate && ($_question->getCreationTime()!='')){ ?>
+									<span class="post-date">
+										<?php echo __('on %1', $helper->getFormatDate($_question->getCreationTime(), 'medium')); ?>
+									</span>
+									<?php } ?>
+								</div>
+							</div>
+						</div>
+					</div>
+					<?php } ?>
+					<?php } ?>
+				</div>
+			</div>
+			<?php } ?>
+			<?php } ?>
+		</div>
+		<script>require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function(){});</script>
+		<?php if($show_toolbarbottom && ($layout == 1 || $layout ==2) && $toolbarHtml){ ?>
+		<div class="faq-toolbar toolbar">
+			<?php echo $toolbarHtml; ?>
+		</div>
+		<?php } ?>
+	</div>
+	
+	<script>
+		require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function($){
+			jQuery(document).ready(function($) {
+				$('#faqpagewidget<?php echo $modId; ?> .row').each(function(index, el) {
+					var h = $(this).height();
+					$(this).find('.faq-category > a').css('height',h+'px');
+				});
+				$(document).on("click", "#faqpagewidget<?php echo $modId; ?> .panel-heading", function(){
+					var parent = $(this).parents('.faqcat-block');
+					var self = $(this);
+					$(parent).find('.panel-heading').each(function(i,e){
+						var questionIcon = $(this).find('.panel-title i');
+						
+						if(self.attr('id')!= $(e).attr('id') || $(this).hasClass('active')){
+							$(this).removeClass('active');
+							if($(this).data('color')){
+								$(this).find('a').css("color",$(this).data('color'));
+							}else{
+								$(this).find('a').css("color","");
+							}
+							if($(this).data('bg-color')){
+								$(this).css("background-color",$(this).data('bg-color'));
+							}else{
+								$(this).css("background-color","");
+							}
+							questionIcon.removeClass(questionIcon.data('icon-active')).addClass(questionIcon.data('icon'));
+						}else{
+							$(self).addClass('active');
+							var target = $(this).data('target');
+							if($(this).data('animated')){
+								$(target).addClass	($(this).data('animated'));
+							}
+							questionIcon.addClass(questionIcon.data('icon-active')).removeClass(questionIcon.data('icon'));
+							if($(self).data('color-active')){
+								$(self).find('a').eq(0).css("color",$(self).data('color-active'));
+							}
+							if($(self).data('bg-color-active')){
+								$(self).css("background-color",$(self).data('bg-color-active'));
+							}
+						}
+					});
+				});
+				var self1 = '';
+				$("#faqpagewidget<?php echo $modId; ?> .panel-heading").hover(function(){
+					self1 = $(this);
+					if(!$(this).hasClass('active')){
+						if($(this).data('color-active')){
+							$(this).find('a').eq(0).css("color",$(this).data('color-active'));
+						}
+						if($(this).data('bg-color-active')){
+							$(this).css("background-color",$(this).data('bg-color-active'));
+						}
+					}
+				}, function(){
+					if(!$(this).hasClass('active')){
+						if($(self1).data('color')){
+							$(self1).find('a').css("color",$(self1).data('color'));
+						}else{
+							$(self1).find('a').css("color","");
+						}
+						if($(self1).data('bg-color')){
+							$(self1).css("background-color",$(self1).data('bg-color'));
+						}else{
+							$(self1).css("background-color","");
+						}
+					}
+					self1 = '';
+				});	
+			});
+		});
+	</script>
+<?php } ?>
+
+<script type="text/javascript">
+		require([
+			'jquery',
+			'Lof_All/lib/fancybox/jquery.fancybox.pack'
+			],function() {
+			jQuery('#faqformwidget<?php echo $modId; ?>').submit(function(e){
+				 e.preventDefault();
+				 if(jQuery(this).validation('isValid') == true) {
+				 	jQuery('#faq-poquestion-widget<?php echo $modId ?> .faqform-loading').addClass('ajax-loading');       
+    				ajaxurl  =  '<?php echo $this->getUrl('loffaq/product/add'); ?>';
+		            jQuery.ajax({
+		                url: ajaxurl,
+		                type:'POST',
+		                dataType: 'json',
+		                data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+						contentType: false,       // The content type used when sending data to the server.
+						cache: false,             // To unable request pages to be cached
+						processData:false,        // To send DOMDocument or non processed data file it is set to false
+		                success: function(data) {
+		                	jQuery('#faqformwidget<?php echo $modId ?>')[0].reset();
+		                	jQuery('#faq-poquestion-widget<?php echo $modId ?> .faqform-loading').removeClass('ajax-loading');
+		                	parent.jQuery.fancybox.close();
+		                }
+		            });
+		        }    
+			});
+		});
+	</script>
