@@ -27,8 +27,8 @@ class QuestionByCategory implements QuestionListByCategoryInterface
      */
     public function __construct(
         QuestionFactory $questionFactory,
-        Data\QuestionSearchResultsInterfaceFactory $searchResultsFactory)
-    {
+        Data\QuestionSearchResultsInterfaceFactory $searchResultsFactory
+    ) {
         $this->_questionFactory = $questionFactory;
         $this->searchResultsFactory = $searchResultsFactory;
     }
@@ -37,9 +37,10 @@ class QuestionByCategory implements QuestionListByCategoryInterface
      * @param $categoryId
      * @return Data\QuestionSearchResultsInterface|mixed
      */
-    public function getQuestionByCategoryForApi($categoryId){
+    public function getQuestionByCategoryForApi($categoryId)
+    {
         $questionCollection = $this->_questionFactory->create()->getCollection();
-        $questionCollection->addFieldToFilter('is_active',1);
+        $questionCollection->addFieldToFilter('is_active', 1);
         $questionCollection->addCategoryFilter($categoryId)
                             ->setOrder('position', 'ASC');
         /** @var Data\QuestionSearchResultsInterface $searchResults */
@@ -48,5 +49,4 @@ class QuestionByCategory implements QuestionListByCategoryInterface
         $searchResults->setTotalCount($questionCollection->getSize());
         return $searchResults;
     }
-
 }

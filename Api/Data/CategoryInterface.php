@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Lof\Faq\Api\Data;
 
 interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterface
@@ -238,7 +237,6 @@ interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
     public function setIsActive($is_active);
-
 
     /**
      * Get description
@@ -516,5 +514,4 @@ interface CategoryInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
     public function setStores($stores);
-
 }

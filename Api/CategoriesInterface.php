@@ -1,15 +1,8 @@
 <?php
-
-
 namespace Lof\Faq\Api;
 
-use Lof\Faq\Api\Data\CategoryInterface;
 use Magento\Framework\Exception\LocalizedException;
 
-/**
- * Interface CategoriesInterface
- * @package Lof\Faq\Api
- */
 interface CategoriesInterface
 {
     /**
@@ -28,15 +21,25 @@ interface CategoriesInterface
 
 
     /**
-     * @param CategoryInterface $category
+     * @param \Lof\Faq\Api\Data\CategoryInterface $category
      * @return mixed
      */
-    public function save(CategoryInterface $category);
+    public function save(\Lof\Faq\Api\Data\CategoryInterface $category);
 
     /**
      * @param int $categoryId
-     * @return CategoryInterface
+     * @return \Lof\Faq\Api\Data\CategoryInterface
      */
     public function getById($categoryId);
 
+
+    /**
+     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param $search
+     * @return \Lof\Faq\Api\Data\CategorySearchResultsInterface
+     */
+    public function getList(
+        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria,
+        $search
+    );
 }

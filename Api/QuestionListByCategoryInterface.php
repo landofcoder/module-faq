@@ -1,6 +1,4 @@
 <?php
-
-
 namespace Lof\Faq\Api;
 
 /**
@@ -17,5 +15,4 @@ interface QuestionListByCategoryInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getQuestionByCategoryForApi($categoryId);
-
 }
