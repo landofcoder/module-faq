@@ -1,4 +1,23 @@
 <?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * https://landofcoder.com/terms
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
+ */
 
 $helper             = $this->helper("Lof\Faq\Helper\Data");
 $show_toolbartop    = $helper->getConfig("faq_page/show_toolbartop");
@@ -56,7 +75,7 @@ if(!isset($layout)){
 <div class="lof-faq">
 	<?php } ?>
 	<?php echo $this->getChildHtml('questions_featured'); ?>
-	
+
 	<?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
 	<?php if($show_toolbartop && ($layout == 1 || $layout == 2) && $isSearch && $toolbarHtml){ ?>
 	<div class="faq-toolbar toolbar">
@@ -64,7 +83,7 @@ if(!isset($layout)){
 	</div>
 	<?php } ?>
 	<div id="faqpage" class="faq<?php echo $layout ?> question-list question-list<?php echo $layout ?> faqcat-block">
-		
+
 		<?php // LIST, GRID ?>
 		<?php
 		$i = 1;
@@ -165,7 +184,7 @@ if(!isset($layout)){
 
 		<?php $blockId = rand() . time(); ?>
 
-		<?php 
+		<?php
 		$question_link = 'javascript:void(0);';
 		$question_url = $helper->getQuestionUrl($_question);
 		if($enable_question_link){
@@ -197,11 +216,11 @@ if(!isset($layout)){
 							<?php echo $helper->subString($answer, $readMoreChar); ?>
 							<?php if(strlen($answer)>$readMoreChar){ ?>
 							<a href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer; ?>
 							<a href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer ?>
 							<?php } ?>
@@ -240,7 +259,7 @@ if(!isset($layout)){
 		<?php $i++; $x++; ?>
 		<?php } ?>
 		<?php } ?>
-		
+
 
 
 		<?php // By Category ?>
@@ -361,7 +380,7 @@ if(!isset($layout)){
 				?>
 				<?php foreach ($catQuestions as $_question) { ?>
 				<?php $blockId = rand() . time(); ?>
-				<?php 
+				<?php
 				$question_link = 'javascript:void(0);';
 				$question_url = $helper->getQuestionUrl($_question);
 				if($enable_question_link){
@@ -386,11 +405,11 @@ if(!isset($layout)){
 							<?php echo $helper->subString($answer, $readMoreChar); ?>
 							<?php if(strlen($answer)>$readMoreChar){ ?>
 							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer; ?>
 							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer ?>
 							<?php } ?>
@@ -433,7 +452,7 @@ if(!isset($layout)){
 		?>
 		<div id="faqcat-<?php echo $_cat->getId() ?>" class="faqcat-block col-md-<?php echo 12/$column; ?>">
 			<a href="<?php echo $helper->getCategoryUrl($_cat); ?>">
-			
+
 			<?php
 			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
 			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
@@ -491,7 +510,7 @@ if(!isset($layout)){
 				?>
 				<?php foreach ($catQuestions as $_question) { ?>
 				<?php $blockId = rand() . time(); ?>
-				<?php 
+				<?php
 				$question_link = 'javascript:void(0);';
 				$question_url = $helper->getQuestionUrl($_question);
 				if($enable_question_link){
@@ -516,11 +535,11 @@ if(!isset($layout)){
 							<?php echo $helper->subString($answer, $readMoreChar); ?>
 							<?php if(strlen($answer)>$readMoreChar){ ?>
 							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer; ?>
 							<a <?php echo $catTitleStyle ?> href="<?php echo $question_url ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer ?>
 							<?php } ?>
@@ -555,7 +574,7 @@ if(!isset($layout)){
 		?>
 		<?php foreach ($catCollection as $_cat) { ?>
 			<?php $catQuestions = $this->getQuestionByCategory($_cat->getId(), $productIds); ?>
-			<?php  if($isSearch && $catQuestions->count()==0) continue; 
+			<?php  if($isSearch && $catQuestions->count()==0) continue;
 			$catTitleStyle = ($_cat->getData('title_bg'))?$_cat->getData('title_bg'):$_cat->getData('title_color');
 			if($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
 			?>
@@ -578,8 +597,8 @@ if(!isset($layout)){
 							<?php if($showDescCat){ ?>
 							<div class="faqcat-desc"><?php echo $_cat->getDescription();?></div>
 							<?php } ?>
-						</div>	
-					</a>	
+						</div>
+					</a>
 				</div>
 			</div>
 
@@ -603,7 +622,7 @@ if(!isset($layout)){
 					var self = $(this);
 					$(parent).find('.panel-heading').each(function(i,e){
 						var questionIcon = $(this).find('.panel-title i');
-						
+
 						if(self.attr('id')!= $(e).attr('id') || $(this).hasClass('active')){
 							$(this).removeClass('active');
 							if($(this).data('color')){
@@ -658,7 +677,7 @@ if(!isset($layout)){
 						}
 					}
 					self1 = '';
-				});	
+				});
 			});
 		});
 	</script>

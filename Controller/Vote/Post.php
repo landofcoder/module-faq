@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Controller\Vote;
 
@@ -62,13 +62,13 @@ class Post extends \Magento\Framework\App\Action\Action
     protected $resultForwardFactory;
 
     /**
-     * @param Context                                             $context              
-     * @param \Magento\Store\Model\StoreManager                   $storeManager         
-     * @param \Magento\Framework\View\Result\PageFactory          $resultPageFactory    
-     * @param \Lof\Faq\Helper\Data                               $faqHelper           
-     * @param \Lof\Faq\Model\Vote                               $vote                 
-     * @param \Magento\Framework\Controller\Result\ForwardFactory $resultForwardFactory 
-     * @param \Magento\Framework\Registry                         $registry             
+     * @param Context                                             $context
+     * @param \Magento\Store\Model\StoreManager                   $storeManager
+     * @param \Magento\Framework\View\Result\PageFactory          $resultPageFactory
+     * @param \Lof\Faq\Helper\Data                               $faqHelper
+     * @param \Lof\Faq\Model\Vote                               $vote
+     * @param \Magento\Framework\Controller\Result\ForwardFactory $resultForwardFactory
+     * @param \Magento\Framework\Registry                         $registry
      */
     public function __construct(
         Context $context,
@@ -79,7 +79,7 @@ class Post extends \Magento\Framework\App\Action\Action
         \Lof\Faq\Model\Vote $vote,
         \Magento\Framework\Controller\Result\ForwardFactory $resultForwardFactory,
         \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList, 
+        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
         \Magento\Customer\Model\Session $customerSession
         ) {
         $this->resultPageFactory    = $resultPageFactory;
@@ -100,7 +100,7 @@ class Post extends \Magento\Framework\App\Action\Action
      * @return \Magento\Framework\View\Result\Page
      */
     public function execute()
-    { 
+    {
         $params = $this->_request->getPostValue();
         if(!empty($params)){
             $voteCollection = $this->_vote->getCollection();
@@ -111,7 +111,7 @@ class Post extends \Magento\Framework\App\Action\Action
             }else{
                 $like = 0;
                 $disllike = 1;
-            } 
+            }
             $customer = $this->_customerSession->getCustomer();
             $data = [
             'ip'             => $this->getUserIP(),
@@ -122,24 +122,24 @@ class Post extends \Magento\Framework\App\Action\Action
             'question_id'        => $params['questionId']
             ];
             $collection = $voteCollection->addFieldToFilter('ip', $this->getUserIP())
-            ->addFieldToFilter('question_id', $params['questionId']);  
+            ->addFieldToFilter('question_id', $params['questionId']);
             $vote = $this->_vote->load($this->getUserIP(), 'ip');
             $question = $this->_question->load($params['questionId']);
-            $questionData = $responseData = [];  
-  
-            if(empty($collection->getData())){   
+            $questionData = $responseData = [];
+
+            if(empty($collection->getData())){
                 $like = (int)$question->getLike() + $like;
                 $disllike = (int)$question->getDisklike() + $disllike;
                 $question->setLike($like);
-                $question->setDisklike($disllike); 
+                $question->setDisklike($disllike);
                 $responseData['like'] = $like;
                 $responseData['disklike'] = $disllike;
                 try{
                     $message = __('Thanks for your vote!');
                     $status = 1;
                     $vote->setData($data)->save();
-                    $question->save(); 
-                    $this->_cacheTypeList->cleanType('full_page'); 
+                    $question->save();
+                    $this->_cacheTypeList->cleanType('full_page');
                 }catch(\Exception $e){
                     $this->messageManager->addError(
                         __('We can\'t process your request right now. Sorry, that\'s all we know.')
@@ -176,7 +176,7 @@ class Post extends \Magento\Framework\App\Action\Action
         else
         {
             $ip = $remote;
-        } 
+        }
         return $ip;
     }
 

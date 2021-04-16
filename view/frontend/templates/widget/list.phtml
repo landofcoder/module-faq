@@ -1,4 +1,23 @@
 <?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * https://landofcoder.com/terms
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
+ */
 
 $helper       = $this->helper("Lof\Faq\Helper\Data");
 $collection   = $this->getCollection();
@@ -65,7 +84,7 @@ if($bodyStyle) $bodyStyle = 'style="' . $bodyStyle . '"';
 	<?php } ?>
 	<div class="question-list" id="question-list<?php echo $blockId ?>">
 		<?php foreach ($collection as $_question) { ?>
-			<?php 
+			<?php
             $question_link = '#question'.$_question->getId().'-'.$blockId;
             $question_url = $helper->getQuestionUrl($_question);
             if($enable_question_link){
@@ -90,11 +109,11 @@ if($bodyStyle) $bodyStyle = 'style="' . $bodyStyle . '"';
 					<?php echo $helper->subString($answer, $readMoreChar); ?>
 					<?php if(strlen($answer)>$readMoreChar){ ?>
 					<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
-					<?php } ?>	
+					<?php } ?>
 					<?php }else{ ?>
 					<?php echo $answer; ?>
 					<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
-					<?php } ?>	
+					<?php } ?>
 					<?php }else{ ?>
 					<?php echo $answer ?>
 					<?php } ?>
@@ -194,7 +213,7 @@ if($bodyStyle) $bodyStyle = 'style="' . $bodyStyle . '"';
 					}
 				}
 				self1 = '';
-			});	
+			});
 		});
 	});
 </script>

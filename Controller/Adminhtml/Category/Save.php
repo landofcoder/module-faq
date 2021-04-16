@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Controller\Adminhtml\Category;
 
@@ -136,7 +136,7 @@ class Save extends \Lof\Faq\Controller\Adminhtml\Category
     {
         $resultRedirect = $this->resultRedirectFactory->create();
 
-        if (isset($_FILES[$fieldId]) && $_FILES[$fieldId]['name']!='') 
+        if (isset($_FILES[$fieldId]) && $_FILES[$fieldId]['name']!='')
         {
             $uploader = $this->_objectManager->create(
                 'Magento\Framework\File\Uploader',
@@ -147,7 +147,7 @@ class Save extends \Lof\Faq\Controller\Adminhtml\Category
             ->getDirectoryRead(DirectoryList::MEDIA);
             $mediaFolder = 'lof/faq/';
             try {
-                $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png')); 
+                $uploader->setAllowedExtensions(array('jpg','jpeg','gif','png'));
                 $uploader->setAllowRenameFiles(true);
                 $uploader->setFilesDispersion(false);
                 $result = $uploader->save($mediaDirectory->getAbsolutePath($mediaFolder)

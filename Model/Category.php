@@ -4,9 +4,9 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the landofcoder.com license that is
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
+ * https://landofcoder.com/terms
  *
  * DISCLAIMER
  *
@@ -14,18 +14,57 @@
  * version in the future.
  *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Model;
 
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\DataObject\IdentityInterface;
 use Lof\Faq\Api\Data\CategoryInterface;
 use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Registry;
+use Magento\Framework\Model\Context;
+use Lof\Faq\Api\Data\CategoryInterfaceFactory;
 
 class Category extends AbstractModel implements CategoryInterface, IdentityInterface
 {
+
+    /**
+     * @var CategoryInterfaceFactory
+     */
+    private $categoryDataFactory;
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * Category constructor.
+     * @param Context $context
+     * @param Registry $registry
+     * @param CategoryInterfaceFactory $categoryInterfaceFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param ResourceModel\Category $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        CategoryInterfaceFactory $categoryInterfaceFactory,
+        DataObjectHelper $dataObjectHelper,
+        ResourceModel\Category $resource = null,
+        AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->categoryDataFactory = $categoryInterfaceFactory;
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+    }
+
     /**
      * Category's Statuses
      */
@@ -47,6 +86,44 @@ class Category extends AbstractModel implements CategoryInterface, IdentityInter
     public function getIdentities()
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
+    }
+
+    /**
+     * Retrieve question model with question data
+     * @return CategoryInterface
+     */
+    public function getDataModel()
+    {
+        $categoryData = $this->getData();
+
+        $categoryDataObject = $this->categoryDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $categoryDataObject,
+            $categoryData,
+            CategoryInterface::class
+        );
+
+        return $categoryDataObject;
+    }
+
+    /**
+     * Retrieve existing extension attributes object or create a new one.
+     * @return \Lof\Faq\Api\Data\CategoryExtensionInterface|null
+     */
+    public function getExtensionAttributes()
+    {
+        return $this->_getExtensionAttributes();
+    }
+
+    /**
+     * Set an extension attributes object.
+     * @param \Lof\Faq\Api\Data\CategoryExtensionInterface $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(
+        \Lof\Faq\Api\Data\CategoryExtensionInterface $extensionAttributes
+    ) {
+        return $this->_setExtensionAttributes($extensionAttributes);
     }
 
     /**

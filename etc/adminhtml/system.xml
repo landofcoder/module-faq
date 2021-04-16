@@ -1,25 +1,23 @@
 <?xml version="1.0"?>
 <!--
-/**
- * Landofcoder
- * 
- * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
- * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
- * DISCLAIMER
- * 
- * Do not edit or add to this file if you wish to upgrade this extension to newer
- * version in the future.
- * 
- * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
- */
--->
+  * Landofcoder
+  *
+  * NOTICE OF LICENSE
+  *
+  * This source file is subject to the Landofcoder.com license that is
+  * available through the world-wide-web at this URL:
+  * https://landofcoder.com/terms
+  *
+  * DISCLAIMER
+  *
+  * Do not edit or add to this file if you wish to upgrade this extension to newer
+  * version in the future.
+  *
+  * @category   Landofcoder
+  * @package    Lof_Faq
+  * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+  * @license    https://landofcoder.com/terms
+  -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
 	<system>
 		<section id="loffaq" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -282,7 +280,7 @@
 				<field id="show_likedislike" translate="label comment" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Show Like/Dislike Button</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-				</field> 
+				</field>
 				<field id="networks_heading" translate="label comment" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Social Buttons</label>
 					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
@@ -417,7 +415,7 @@
 				</field>
 			</group>
 			<group id="sidebar" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>Sidebar</label> 
+				<label>Sidebar</label>
 				<field id="tag_heading" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Tag Block</label>
 					<frontend_model>Lof\Faq\Block\Adminhtml\System\Config\Form\Field\Heading</frontend_model>
@@ -434,7 +432,7 @@
 				<field id="show_tagcountdown" translate="label comment" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Show Number Post</label>
 					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-				</field> 
+				</field>
 				<field id="tags_per_page" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
 					<label>Tags Number</label>
 					<validate>validate-number</validate>
