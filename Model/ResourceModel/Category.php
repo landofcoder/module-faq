@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Model\ResourceModel;
 
@@ -40,7 +40,7 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         $connectionName = null
-        ) {
+    ) {
         parent::__construct($context, $connectionName);
         $this->_storeManager = $storeManager;
     }
@@ -101,11 +101,11 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         }
 
         // Posts Related
-        if($questionProducts = $object->getData('questions')){
+        if ($questionProducts = $object->getData('questions')) {
             $table = $this->getTable('lof_faq_question_category');
             $where = ['category_id = ?' => (int)$object->getId()];
             $this->getConnection()->delete($table, $where);
-            if($questionProducts = $object->getData('questions')){
+            if ($questionProducts = $object->getData('questions')) {
                 $where = ['category_id = ?' => (int)$object->getId()];
                 $this->getConnection()->delete($table, $where);
                 $data = [];
@@ -142,10 +142,10 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             ->from($this->getTable('lof_faq_question_category'))
             ->where(
                 'category_id = '.(int)$id
-                );
+            );
             $products = $connection->fetchAll($select);
             $object->setData('questions', $products);
-        } 
+        }
 
         return parent::_afterLoad($object);
     }
@@ -169,21 +169,21 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
                 ['cbs' => $this->getTable('lof_faq_category_store')],
                 $this->getMainTable() . '.category_id = cbs.category_id',
                 ['store_id']
-                )->where(
+            )->where(
                 'is_active = ?',
                 1
-                )->where(
+            )->where(
                 'cbs.store_id in (?)',
                 $stores
-                )->order(
+            )->order(
                 'store_id DESC'
-                )->limit(
+            )->limit(
                 1
-                );
-            }
-
-            return $select;
+            );
         }
+
+        return $select;
+    }
 
     /**
      * Check for unique of identifier of block to selected store(s).
@@ -202,28 +202,28 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 
         $select = $this->getConnection()->select()->from(
             ['cb' => $this->getMainTable()]
-            )->join(
+        )->join(
             ['cbs' => $this->getTable('lof_faq_category_store')],
             'cb.category_id = cbs.category_id',
             []
-            )->where(
+        )->where(
             'cb.identifier = ?',
             $object->getData('identifier')
-            )->where(
+        )->where(
             'cbs.store_id IN (?)',
             $stores
-            );
+        );
 
-            if ($object->getId()) {
-                $select->where('cb.category_id <> ?', $object->getId());
-            }
-
-            if ($this->getConnection()->fetchRow($select)) {
-                return false;
-            }
-
-            return true;
+        if ($object->getId()) {
+            $select->where('cb.category_id <> ?', $object->getId());
         }
+
+        if ($this->getConnection()->fetchRow($select)) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * Get store ids to which specified item is assigned
@@ -238,14 +238,14 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         $select = $connection->select()->from(
             $this->getTable('lof_faq_category_store'),
             'store_id'
-            )->where(
+        )->where(
             'category_id = :category_id'
-            );
+        );
 
-            $binds = [':category_id' => (int)$id];
+        $binds = [':category_id' => (int)$id];
 
-            return $connection->fetchCol($select, $binds);
-        }
+        return $connection->fetchCol($select, $binds);
+    }
 
     /**
      * Perform operations before object save
@@ -259,7 +259,7 @@ class Category extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         if (!$this->getIsUniqueBlockToStores($object)) {
             throw new \Magento\Framework\Exception\LocalizedException(
                 __('A category identifier with the same properties already exists in the selected store.')
-                );
+            );
         }
         return $this;
     }

@@ -1,4 +1,24 @@
 <?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * https://landofcoder.com/terms
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
+ */
+
 $cat = $this->getCategory();
 $helper = $this->helper("Lof\Faq\Helper\Data");
 $show_toolbartop = $helper->getConfig("category_page/show_toolbartop");
@@ -127,7 +147,7 @@ if ($catTitleStyle) $catTitleStyle = 'style="color: ' . $catTitleStyle . '"';
             <?php endif; ?>
             <?php if($collection):?>
             <?php foreach ($collection as $_question) { ?>
-                <?php 
+                <?php
                 $question_link = 'javascript:void(0);';
                 $question_url = $helper->getQuestionUrl($_question);
                 if($enable_question_link){

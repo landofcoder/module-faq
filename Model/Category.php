@@ -1,30 +1,70 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Model;
 
+use Magento\Framework\Api\DataObjectHelper;
+use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\DataObject\IdentityInterface;
 use Lof\Faq\Api\Data\CategoryInterface;
+use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Registry;
+use Magento\Framework\Model\Context;
+use Lof\Faq\Api\Data\CategoryInterfaceFactory;
 
-class Category extends \Magento\Framework\Model\AbstractModel implements CategoryInterface, IdentityInterface
+class Category extends AbstractModel implements CategoryInterface, IdentityInterface
 {
+
+    /**
+     * @var CategoryInterfaceFactory
+     */
+    private $categoryDataFactory;
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * Category constructor.
+     * @param Context $context
+     * @param Registry $registry
+     * @param CategoryInterfaceFactory $categoryInterfaceFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param ResourceModel\Category $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
+     */
+    public function __construct(
+        Context $context,
+        Registry $registry,
+        CategoryInterfaceFactory $categoryInterfaceFactory,
+        DataObjectHelper $dataObjectHelper,
+        ResourceModel\Category $resource = null,
+        AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->categoryDataFactory = $categoryInterfaceFactory;
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+    }
+
     /**
      * Category's Statuses
      */
@@ -36,7 +76,7 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      */
     protected function _construct()
     {
-        $this->_init('Lof\Faq\Model\ResourceModel\Category');
+        $this->_init(\Lof\Faq\Model\ResourceModel\Category::class);
     }
     /**
      * Get identities
@@ -49,10 +89,49 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
     }
 
     /**
+     * Retrieve question model with question data
+     * @return CategoryInterface
+     */
+    public function getDataModel()
+    {
+        $categoryData = $this->getData();
+
+        $categoryDataObject = $this->categoryDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $categoryDataObject,
+            $categoryData,
+            CategoryInterface::class
+        );
+
+        return $categoryDataObject;
+    }
+
+    /**
+     * Retrieve existing extension attributes object or create a new one.
+     * @return \Lof\Faq\Api\Data\CategoryExtensionInterface|null
+     */
+    public function getExtensionAttributes()
+    {
+        return $this->_getExtensionAttributes();
+    }
+
+    /**
+     * Set an extension attributes object.
+     * @param \Lof\Faq\Api\Data\CategoryExtensionInterface $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(
+        \Lof\Faq\Api\Data\CategoryExtensionInterface $extensionAttributes
+    ) {
+        return $this->_setExtensionAttributes($extensionAttributes);
+    }
+
+    /**
      * Get category_id
      * @return string|null
      */
-    public function getCategory_id(){
+    public function getCategoryId()
+    {
         return $this->getData(self::CATEGORY_ID);
     }
     /**
@@ -60,15 +139,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $category_id
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setCategory_id($category_id){
-        return $this->setData(self::CATEGORY_ID,$category_id);
+    public function setCategoryId($category_id)
+    {
+        return $this->setData(self::CATEGORY_ID, $category_id);
     }
 
     /**
      * Get title
      * @return string|null
      */
-    public function getTitle(){
+    public function getTitle()
+    {
         return $this->getData(self::TITLE);
     }
 
@@ -77,15 +158,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitle($title){
-        return $this->setData(self::TITLE,$title);
+    public function setTitle($title)
+    {
+        return $this->setData(self::TITLE, $title);
     }
 
     /**
      * Get identifier
      * @return string|null
      */
-    public function getIdentifier(){
+    public function getIdentifier()
+    {
         return $this->getData(self::IDENTIFIER);
     }
 
@@ -94,32 +177,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string identifier
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setIdentifier($identifier){
-        return $this->setData(self::IDENTIFIER,$identifier);
-    }
-
-    /**
-     * Get category_id
-     * @return int|null
-     */
-    public function getCategoryId(){
-        return $this->getData(self::CATEGORY_ID);
-    }
-
-    /**
-     * Set category_id
-     * @param int category_id
-     * @return \Lof\Faq\Api\Data\CategoryInterface
-     */
-    public function setCategoryId($category_id){
-        return $this->setData(self::CATEGORY_ID,$category_id);
+    public function setIdentifier($identifier)
+    {
+        return $this->setData(self::IDENTIFIER, $identifier);
     }
 
     /**
      * Get page_title
      * @return string|null
      */
-    public function getPageTitle(){
+    public function getPageTitle()
+    {
         return $this->getData(self::PAGE_TITLE);
     }
 
@@ -128,15 +196,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $page_title
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setPageTitle($page_title){
-        return $this->setData(self::PAGE_TITLE,$page_title);
+    public function setPageTitle($page_title)
+    {
+        return $this->setData(self::PAGE_TITLE, $page_title);
     }
 
     /**
      * Get grid_column
      * @return string|null
      */
-    public function getGridColumn(){
+    public function getGridColumn()
+    {
         return $this->getData(self::GRID_COLUMN);
     }
 
@@ -145,15 +215,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $grid_column
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setGridColumn($grid_column){
-        return $this->setData(self::GRID_COLUMN,$grid_column);
+    public function setGridColumn($grid_column)
+    {
+        return $this->setData(self::GRID_COLUMN, $grid_column);
     }
 
     /**
      * Get layout_type
      * @return string|null
      */
-    public function getLayoutType(){
+    public function getLayoutType()
+    {
         return $this->getData(self::LAYOUT_TYPE);
     }
 
@@ -162,15 +234,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $layout_type
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setLayoutType($layout_type){
-        return $this->setData(self::LAYOUT_TYPE,$layout_type);
+    public function setLayoutType($layout_type)
+    {
+        return $this->setData(self::LAYOUT_TYPE, $layout_type);
     }
 
     /**
      * Get page_layout
      * @return string|null
      */
-    public function getPageLayout(){
+    public function getPageLayout()
+    {
         return $this->getData(self::PAGE_LAYOUT);
     }
 
@@ -179,15 +253,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $page_layout
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setPageLayout($page_layout){
-        return $this->setData(self::PAGE_LAYOUT,$page_layout);
+    public function setPageLayout($page_layout)
+    {
+        return $this->setData(self::PAGE_LAYOUT, $page_layout);
     }
 
     /**
      * Get meta_keywords
      * @return string|null
      */
-    public function getMetaKeywords(){
+    public function getMetaKeywords()
+    {
         return $this->getData(self::META_KEYWORDS);
     }
 
@@ -196,15 +272,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $meta_keywords
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setMetaKeywords($meta_keywords){
-        return $this->setData(self::META_KEYWORDS,$meta_keywords);
+    public function setMetaKeywords($meta_keywords)
+    {
+        return $this->setData(self::META_KEYWORDS, $meta_keywords);
     }
 
     /**
      * Get meta_description
      * @return string|null
      */
-    public function getMetaDescription(){
+    public function getMetaDescription()
+    {
         return $this->getData(self::META_DESCRIPTION);
     }
 
@@ -213,15 +291,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $meta_description
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setMetaDescription($meta_description){
-        return $this->setData(self::META_DESCRIPTION,$meta_description);
+    public function setMetaDescription($meta_description)
+    {
+        return $this->setData(self::META_DESCRIPTION, $meta_description);
     }
 
     /**
      * Get image
      * @return string|null
      */
-    public function getImage(){
+    public function getImage()
+    {
         return $this->getData(self::IMAGE);
     }
 
@@ -230,15 +310,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $image
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setImage($image){
-        return $this->setData(self::IMAGE,$image);
+    public function setImage($image)
+    {
+        return $this->setData(self::IMAGE, $image);
     }
 
     /**
      * Get creation_time
      * @return string|null
      */
-    public function getCreationTime(){
+    public function getCreationTime()
+    {
         return $this->getData(self::CREATION_TIME);
     }
 
@@ -247,15 +329,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $creation_time
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setCreationTime($creation_time){
-        return $this->setData(self::CREATION_TIME,$creation_time);
+    public function setCreationTime($creation_time)
+    {
+        return $this->setData(self::CREATION_TIME, $creation_time);
     }
 
     /**
      * Get update_time
      * @return string|null
      */
-    public function getUpdateTime(){
+    public function getUpdateTime()
+    {
         return $this->getData(self::UPDATE_TIME);
     }
 
@@ -264,15 +348,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $update_time
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setUpdateTime($update_time){
-        return $this->setData(self::UPDATE_TIME,$update_time);
+    public function setUpdateTime($update_time)
+    {
+        return $this->setData(self::UPDATE_TIME, $update_time);
     }
 
     /**
      * Get position
      * @return int|null
      */
-    public function getPosition(){
+    public function getPosition()
+    {
         return $this->getData(self::POSITION);
     }
 
@@ -281,15 +367,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param int $position
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setPosition($position){
-        return $this->setData(self::POSITION,$position);
+    public function setPosition($position)
+    {
+        return $this->setData(self::POSITION, $position);
     }
 
     /**
      * Get include_in_sidebar
      * @return int|null
      */
-    public function getIncludeInSidebar(){
+    public function getIncludeInSidebar()
+    {
         return $this->getData(self::INCLUDE_IN_SIDEBAR);
     }
     /**
@@ -297,16 +385,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param int $include_in_sidebar
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setIncludeInSidebar($include_in_sidebar){
-        return $this->setData(self::INCLUDE_IN_SIDEBAR,$include_in_sidebar);
+    public function setIncludeInSidebar($include_in_sidebar)
+    {
+        return $this->setData(self::INCLUDE_IN_SIDEBAR, $include_in_sidebar);
     }
-
 
     /**
      * Get is_active
      * @return bool|null
      */
-    public function getIsActive(){
+    public function getIsActive()
+    {
         return $this->getData(self::IS_ACTIVE);
     }
 
@@ -315,15 +404,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param int|bool $is_active
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setIsActive($is_active){
-        return $this->setData(self::IS_ACTIVE,$is_active);
+    public function setIsActive($is_active)
+    {
+        return $this->setData(self::IS_ACTIVE, $is_active);
     }
 
     /**
      * Get description
      * @return string|null
      */
-    public function getDescription(){
+    public function getDescription()
+    {
         return $this->getData(self::DESCRIPTION);
     }
 
@@ -332,15 +423,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $description
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setDescription($description){
-        return $this->setData(self::DESCRIPTION,$description);
+    public function setDescription($description)
+    {
+        return $this->setData(self::DESCRIPTION, $description);
     }
 
     /**
      * Get parent_id
      * @return string|null
      */
-    public function getParentId(){
+    public function getParentId()
+    {
         return $this->getData(self::PARENT_ID);
     }
     /**
@@ -348,15 +441,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $parent_id
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setParentId($parent_id){
-        return $this->setData(self::PARENT_ID,$parent_id);
+    public function setParentId($parent_id)
+    {
+        return $this->setData(self::PARENT_ID, $parent_id);
     }
 
     /**
      * Get title_size
      * @return string|null
      */
-    public function getTitleSize(){
+    public function getTitleSize()
+    {
         return $this->getData(self::TITLE_SIZE);
     }
     /**
@@ -364,15 +459,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_size
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleSize($title_size){
-        return $this->setData(self::TITLE_SIZE,$title_size);
+    public function setTitleSize($title_size)
+    {
+        return $this->setData(self::TITLE_SIZE, $title_size);
     }
 
     /**
      * Get title_color
      * @return string|null
      */
-    public function getTitleColor(){
+    public function getTitleColor()
+    {
         return $this->getData(self::TITLE_COLOR);
     }
     /**
@@ -380,15 +477,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_color
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleColor($title_color){
-        return $this->setData(self::TITLE_COLOR,$title_color);
+    public function setTitleColor($title_color)
+    {
+        return $this->setData(self::TITLE_COLOR, $title_color);
     }
 
     /**
      * Get title_color_active
      * @return string|null
      */
-    public function getTitleColorActive(){
+    public function getTitleColorActive()
+    {
         return $this->getData(self::TITLE_COLOR_ACTIVE);
     }
     /**
@@ -396,15 +495,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_color_active
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleColorActive($title_color_active){
-        return $this->setData(self::TITLE_COLOR_ACTIVE,$title_color_active);
+    public function setTitleColorActive($title_color_active)
+    {
+        return $this->setData(self::TITLE_COLOR_ACTIVE, $title_color_active);
     }
 
     /**
      * Get title_bg
      * @return string|null
      */
-    public function getTitleBg(){
+    public function getTitleBg()
+    {
         return $this->getData(self::TITLE_BG);
     }
     /**
@@ -412,15 +513,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_bg
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleBg($title_bg){
-        return $this->setData(self::TITLE_BG,$title_bg);
+    public function setTitleBg($title_bg)
+    {
+        return $this->setData(self::TITLE_BG, $title_bg);
     }
 
     /**
      * Get title_bg_active
      * @return string|null
      */
-    public function getTitleBgActive(){
+    public function getTitleBgActive()
+    {
         return $this->getData(self::TITLE_BG_ACTIVE);
     }
     /**
@@ -428,15 +531,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_bg_active
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleBgActive($title_bg_active){
-        return $this->setData(self::TITLE_BG_ACTIVE,$title_bg_active);
+    public function setTitleBgActive($title_bg_active)
+    {
+        return $this->setData(self::TITLE_BG_ACTIVE, $title_bg_active);
     }
 
     /**
      * Get border_width
      * @return string|null
      */
-    public function getBorderWidth(){
+    public function getBorderWidth()
+    {
         return $this->getData(self::BORDER_WIDTH);
     }
     /**
@@ -444,15 +549,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $border_width
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setBorderWidth($border_width){
-        return $this->setData(self::BORDER_WIDTH,$border_width);
+    public function setBorderWidth($border_width)
+    {
+        return $this->setData(self::BORDER_WIDTH, $border_width);
     }
 
     /**
      * Get title_border_color
      * @return string|null
      */
-    public function getTitleBorderColor(){
+    public function getTitleBorderColor()
+    {
         return $this->getData(self::TITLE_BORDER_COLOR);
     }
     /**
@@ -460,15 +567,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_border_color
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleBorderColor($title_border_color){
-        return $this->setData(self::TITLE_BORDER_COLOR,$title_border_color);
+    public function setTitleBorderColor($title_border_color)
+    {
+        return $this->setData(self::TITLE_BORDER_COLOR, $title_border_color);
     }
 
     /**
      * Get title_border_radius
      * @return string|null
      */
-    public function getTitleBorderRadius(){
+    public function getTitleBorderRadius()
+    {
         return $this->getData(self::TITLE_BORDER_RADIUS);
     }
     /**
@@ -476,15 +585,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $title_border_radius
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setTitleBorderRadius($title_border_radius){
-        return $this->setData(self::TITLE_BORDER_RADIUS,$title_border_radius);
+    public function setTitleBorderRadius($title_border_radius)
+    {
+        return $this->setData(self::TITLE_BORDER_RADIUS, $title_border_radius);
     }
 
     /**
      * Get body_size
      * @return string|null
      */
-    public function getBodySize(){
+    public function getBodySize()
+    {
         return $this->getData(self::BODY_SIZE);
     }
     /**
@@ -492,15 +603,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $body_size
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setBodySize($body_size){
-        return $this->setData(self::BODY_SIZE,$body_size);
+    public function setBodySize($body_size)
+    {
+        return $this->setData(self::BODY_SIZE, $body_size);
     }
 
     /**
      * Get body_color
      * @return string|null
      */
-    public function getBodyColor(){
+    public function getBodyColor()
+    {
         return $this->getData(self::BODY_COLOR);
     }
     /**
@@ -508,15 +621,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $body_color
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setBodyColor($body_color){
-        return $this->setData(self::BODY_COLOR,$body_color);
+    public function setBodyColor($body_color)
+    {
+        return $this->setData(self::BODY_COLOR, $body_color);
     }
 
     /**
      * Get body_bg
      * @return string|null
      */
-    public function getBodyBg(){
+    public function getBodyBg()
+    {
         return $this->getData(self::BODY_BG);
     }
     /**
@@ -524,15 +639,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $body_bg
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setBodyBg($body_bg){
-        return $this->setData(self::BODY_BG,$body_bg);
+    public function setBodyBg($body_bg)
+    {
+        return $this->setData(self::BODY_BG, $body_bg);
     }
 
     /**
      * Get question_margin
      * @return string|null
      */
-    public function getQuestionMargin(){
+    public function getQuestionMargin()
+    {
         return $this->getData(self::QUESTION_MARGIN);
     }
     /**
@@ -540,15 +657,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $question_margin
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setQuestionMargin($question_margin){
-        return $this->setData(self::QUESTION_MARGIN,$question_margin);
+    public function setQuestionMargin($question_margin)
+    {
+        return $this->setData(self::QUESTION_MARGIN, $question_margin);
     }
 
     /**
      * Get question_icon
      * @return string|null
      */
-    public function getQuestionIcon(){
+    public function getQuestionIcon()
+    {
         return $this->getData(self::QUESTION_ICON);
     }
     /**
@@ -556,15 +675,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $question_icon
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setQuestionIcon($question_icon){
-        return $this->setData(self::QUESTION_ICON,$question_icon);
+    public function setQuestionIcon($question_icon)
+    {
+        return $this->setData(self::QUESTION_ICON, $question_icon);
     }
 
     /**
      * Get question_active_icon
      * @return string|null
      */
-    public function getQuestionActiveIcon(){
+    public function getQuestionActiveIcon()
+    {
         return $this->getData(self::QUESTION_ACTIVE_ICON);
     }
     /**
@@ -572,15 +693,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $question_active_icon
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setQuestionActiveIcon($question_active_icon){
-        return $this->setData(self::QUESTION_ACTIVE_ICON,$question_active_icon);
+    public function setQuestionActiveIcon($question_active_icon)
+    {
+        return $this->setData(self::QUESTION_ACTIVE_ICON, $question_active_icon);
     }
 
     /**
      * Get animation_class
      * @return string|null
      */
-    public function getAnimationClass(){
+    public function getAnimationClass()
+    {
         return $this->getData(self::ANIMATION_CLASS);
     }
     /**
@@ -588,31 +711,35 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $animation_class
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setAnimationClass($animation_class){
-        return $this->setData(self::ANIMATION_CLASS,$animation_class);
+    public function setAnimationClass($animation_class)
+    {
+        return $this->setData(self::ANIMATION_CLASS, $animation_class);
     }
 
     /**
      * Get animation_speed
      * @return string|null
      */
-    public function getAnimationSpeed(){
-        return $this->getData(self::ANIMATION_CLASS);
+    public function getAnimationSpeed()
+    {
+        return $this->getData(self::ANIMATION_SPEED);
     }
     /**
      * Set animation_speed
      * @param string $animation_speed
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setAnimationSpeed($animation_speed){
-        return $this->setData(self::ANIMATION_CLASS,$animation_speed);
+    public function setAnimationSpeed($animation_speed)
+    {
+        return $this->setData(self::ANIMATION_SPEED, $animation_speed);
     }
 
     /**
      * Get cat_icon
      * @return string|null
      */
-    public function getCatIcon(){
+    public function getCatIcon()
+    {
         return $this->getData(self::CAT_ICON);
     }
     /**
@@ -620,15 +747,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $cat_icon
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setCatIcon($cat_icon){
-        return $this->setData(self::CAT_ICON,$cat_icon);
+    public function setCatIcon($cat_icon)
+    {
+        return $this->setData(self::CAT_ICON, $cat_icon);
     }
 
     /**
      * Get limit
      * @return string|null
      */
-    public function getLimit(){
+    public function getLimit()
+    {
         return $this->getData(self::LIMIT);
     }
     /**
@@ -636,15 +765,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $limit
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setLimit($limit){
-        return $this->setData(self::LIMIT,$limit);
+    public function setLimit($limit)
+    {
+        return $this->setData(self::LIMIT, $limit);
     }
 
     /**
      * Get page
      * @return string|null
      */
-    public function getPage(){
+    public function getPage()
+    {
         return $this->getData(self::PAGE);
     }
     /**
@@ -652,15 +783,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string $page
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setPage($page){
-        return $this->setData(self::PAGE,$page);
+    public function setPage($page)
+    {
+        return $this->setData(self::PAGE, $page);
     }
 
     /**
      * Get links
      * @return string[]|null
      */
-    public function getLinks(){
+    public function getLinks()
+    {
         return $this->getData(self::LINKS);
     }
     /**
@@ -668,15 +801,17 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string[] $links
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setLinks($links){
-        return $this->setData(self::LINKS,$links);
+    public function setLinks($links)
+    {
+        return $this->setData(self::LINKS, $links);
     }
 
     /**
      * Get stores
      * @return string[]|null
      */
-    public function getStores(){
+    public function getStores()
+    {
         return $this->getData(self::STORES);
     }
     /**
@@ -684,8 +819,8 @@ class Category extends \Magento\Framework\Model\AbstractModel implements Categor
      * @param string[] $stores
      * @return \Lof\Faq\Api\Data\CategoryInterface
      */
-    public function setStores($stores){
-        return $this->setData(self::STORES,$stores);
+    public function setStores($stores)
+    {
+        return $this->setData(self::STORES, $stores);
     }
-
 }

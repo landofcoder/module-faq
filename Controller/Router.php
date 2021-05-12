@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Controller;
 
@@ -102,7 +102,7 @@ class Router implements RouterInterface
         ManagerInterface $eventManager,
         \Lof\Faq\Model\Question $questionFactory,
         \Lof\Faq\Model\Category $categoryFactory,
-        \Lof\Faq\Helper\Data $faqHelper,  
+        \Lof\Faq\Helper\Data $faqHelper,
         \Lof\Faq\Model\Tag $tag,
         StoreManagerInterface $storeManager,
         \Magento\Framework\Registry $registry
@@ -194,11 +194,11 @@ class Router implements RouterInterface
 
 
                 $identifiers = explode('/',$urlKey); //faq/question/id/:question_id or faq/question/question-url-code-ID or question/question-url-code-ID
-                if( ($route == '' && count($identifiers) == 3) || 
-                    ($route != '' && count($identifiers) == 3 && $route == $identifiers[0]) || 
+                if( ($route == '' && count($identifiers) == 3) ||
+                    ($route != '' && count($identifiers) == 3 && $route == $identifiers[0]) ||
                     ($route !='' && count($identifiers) == 4 && $route == $identifiers[0]) ||
                     ($route == '' && count($identifiers) == 2 && $question_route == $identifiers[0])
-                    
+
                 ) {
                     $questionId = null;
                     $questionKey = '';
@@ -276,7 +276,7 @@ class Router implements RouterInterface
                         } else {
                             $question = $questions->addStoreFilter($store)->getFirstItem();
                         }
-                        
+
                         if($question->getId()){
                             $this->_coreRegistry->register("current_faq_question", $question);
                             $request->setModuleName('loffaq')
@@ -294,14 +294,14 @@ class Router implements RouterInterface
                     }
                 }
 
-                // add router tag  
+                // add router tag
                 $identifiers = explode('/',$urlKey);
                 if( (count($identifiers) == 3) && $route == $identifiers[0] && $identifiers[1] == 'tag') {
-                    $alias =  $identifiers[2];   
+                    $alias =  $identifiers[2];
                     $tagCollection = $this->_tag->getCollection()
                     ->addFieldToFilter("alias", $alias);
-                    if(!empty($tagCollection)){ 
-                        $tag = $tagCollection->getFirstItem(); 
+                    if(!empty($tagCollection)){
+                        $tag = $tagCollection->getFirstItem();
                         $questionIds = [];
                         foreach ($tagCollection as $k => $v) {
                             $questionIds[] = $v['question_id'];

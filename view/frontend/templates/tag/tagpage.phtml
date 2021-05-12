@@ -1,4 +1,24 @@
 <?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * https://landofcoder.com/terms
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
+ */
+
 $helper      		= $this->helper("Lof\Faq\Helper\Data");
 $show_toolbartop    = $helper->getConfig("faq_page/show_toolbartop");
 $show_toolbarbottom = $helper->getConfig("faq_page/show_toolbarbottom");
@@ -12,7 +32,7 @@ $readMoreLink       = $helper->getConfig("faq_page/showreadmorelink");
 $readMoreChar       = (int)$helper->getConfig("faq_page/readmore_char");
 $column 			= (int)$column?$column:3;
 $collection         = $this->getCollection();
-$total 				= $collection->count(); 
+$total 				= $collection->count();
 $itemsperpage 		= (int)$helper->getConfig('faq_page/item_per_page');
 $isSearch 			= $this->getData('is_search');
 $total 				= $collection->count();
@@ -27,8 +47,8 @@ $total 				= $collection->count();
 
 <?php if(!$isSearch){ ?>
 <div class="lof-faq">
-	<?php } ?> 
-	
+	<?php } ?>
+
 	<?php $toolbarHtml = trim($block->getChildHtml('toolbar')); ?>
 	<?php if($show_toolbartop && ($layout == 1 || $layout == 2) && $isSearch && $toolbarHtml) { ?>
 	<div class="faq-toolbar toolbar">
@@ -70,11 +90,11 @@ $total 				= $collection->count();
 							<?php echo $helper->subString($answer, $readMoreChar); ?>
 							<?php if(strlen($answer)>$readMoreChar){ ?>
 							<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer; ?>
 							<a href="<?php echo $helper->getQuestionUrl($_question) ?>"><?php echo __('Read more') ?></a>
-							<?php } ?>	
+							<?php } ?>
 							<?php }else{ ?>
 							<?php echo $answer ?>
 							<?php } ?>
@@ -114,7 +134,7 @@ $total 				= $collection->count();
 		<?php } ?>
 		<?php $i++; $x++; ?>
 		<?php } ?>
-		<?php } ?> 
+		<?php } ?>
 	</div>
 	<script>
 		require(['jquery','Lof_All/lib/bootstrap/js/bootstrap.min'], function($){
@@ -179,7 +199,7 @@ $total 				= $collection->count();
 						}
 					}
 					self1 = '';
-				});	
+				});
 			});
 		});
 	</script>

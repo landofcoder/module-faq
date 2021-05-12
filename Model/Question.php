@@ -1,35 +1,45 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Model;
 
+use Lof\Faq\Api\Data\QuestionInterfaceFactory;
+use Lof\Faq\Helper\Data;
+use Lof\Faq\Model\ResourceModel\Question\Collection;
+use Magento\Framework\Api\DataObjectHelper;
 use Magento\Framework\DataObject\IdentityInterface;
 use Lof\Faq\Api\Data\QuestionInterface;
+use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
 
-class Question extends \Magento\Framework\Model\AbstractModel implements QuestionInterface, IdentityInterface
-{	
-	/**
+class Question extends AbstractModel implements QuestionInterface, IdentityInterface
+{
+
+    /**
      * Question's Statuses
      */
     const STATUS_ENABLED = 1;
+
     const STATUS_DISABLED = 0;
+
     const CACHE_TAG = 'lof_faq_question';
 
     /**
@@ -49,40 +59,62 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      */
     protected $_url;
 
+    /**
+     * @var ResourceModel\Question|null
+     */
     protected $_resource;
 
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
+    /**
+     * @var Data
+     */
+    private $helper;
+    /**
+     * @var QuestionInterfaceFactory
+     */
+    private $questionDataFactory;
+    /**
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
 
-
+    /**
+     * Question constructor.
+     * @param Context $context
+     * @param Registry $registry
+     * @param ResourceModel\Question|null $resource
+     * @param ResourceModel\Question\Collection|null $resourceCollection
+     * @param Data $helper
+     * @param QuestionInterfaceFactory $questionInterfaceFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param array $data
+     */
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Lof\Faq\Model\ResourceModel\Question $resource = null,
-        \Lof\Faq\Model\ResourceModel\Question\Collection $resourceCollection = null,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\UrlInterface $url,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Lof\Faq\Helper\Data $helper,
+        Context $context,
+        Registry $registry,
+        ResourceModel\Question $resource = null,
+        Collection $resourceCollection = null,
+        Data $helper,
+        QuestionInterfaceFactory $questionInterfaceFactory,
+        DataObjectHelper $dataObjectHelper,
         array $data = []
-        ) {
-        $this->_storeManager = $storeManager;
-        $this->_url = $url;
+    ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
         $this->_resource = $resource;
-        $this->scopeConfig = $scopeConfig;
         $this->helper = $helper;
+        $this->dataObjectHelper = $dataObjectHelper;
+        $this->questionDataFactory = $questionInterfaceFactory;
     }
-
 
     /**
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('Lof\Faq\Model\ResourceModel\Question');
+        $this->_init(ResourceModel\Question::class);
     }
 
     /**
@@ -96,6 +128,44 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
     }
 
     /**
+     * Retrieve category model with category data
+     * @return QuestionInterface
+     */
+    public function getDataModel()
+    {
+        $questionData = $this->getData();
+
+        $questionDataObject = $this->questionDataFactory->create();
+        $this->dataObjectHelper->populateWithArray(
+            $questionDataObject,
+            $questionData,
+            QuestionInterface::class
+        );
+
+        return $questionDataObject;
+    }
+
+    /**
+     * Retrieve existing extension attributes object or create a new one.
+     * @return \Lof\Faq\Api\Data\QuestionExtensionInterface|null
+     */
+    public function getExtensionAttributes()
+    {
+        return $this->_getExtensionAttributes();
+    }
+
+    /**
+     * Set an extension attributes object.
+     * @param \Lof\Faq\Api\Data\QuestionExtensionInterface $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(
+        \Lof\Faq\Api\Data\QuestionExtensionInterface $extensionAttributes
+    ) {
+        return $this->_setExtensionAttributes($extensionAttributes);
+    }
+
+    /**
      * Get ID
      *
      * @return int
@@ -104,11 +174,15 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
     {
         return parent::getData(self::QUESTION_ID);
     }
-    
-    public function getQuestionCategories(){
-        if(!$this->_resource){
+
+    /**
+     * @return array
+     */
+    public function getQuestionCategories()
+    {
+        if (!$this->_resource) {
             $object_manager = \Magento\Framework\App\ObjectManager::getInstance();
-            $this->_resource = $object_manager->create("Lof\Faq\Model\ResourceModel\Question");
+            $this->_resource = $object_manager->create(ResourceModel\Question::class);
         }
         $connection = $this->_resource->getConnection();
         $select = 'SELECT * FROM ' . $this->_resource->getTable('lof_faq_question_category') . ' WHERE question_id = ' . $this->getData("question_id");
@@ -129,7 +203,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get question_id
      * @return string|null
      */
-    public function getQuestionId(){
+    public function getQuestionId()
+    {
         return $this->getData(self::QUESTION_ID);
     }
 
@@ -138,7 +213,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $questionId
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionId($questionId){
+    public function setQuestionId($questionId)
+    {
         return $this->setData(self::QUESTION_ID, $questionId);
     }
 
@@ -146,7 +222,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get title
      * @return string|null
      */
-    public function getTitle(){
+    public function getTitle()
+    {
         return $this->getData(self::TITLE);
     }
 
@@ -155,7 +232,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitle($title){
+    public function setTitle($title)
+    {
         return $this->setData(self::TITLE, $title);
     }
 
@@ -163,7 +241,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get author_email
      * @return string|null
      */
-    public function getAuthorEmail(){
+    public function getAuthorEmail()
+    {
         return $this->getData(self::AUTHOR_EMAIL);
     }
 
@@ -172,7 +251,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $author_email
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setAuthorEmail($author_email){
+    public function setAuthorEmail($author_email)
+    {
         return $this->setData(self::AUTHOR_EMAIL, $author_email);
     }
 
@@ -180,7 +260,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get author_name
      * @return string|null
      */
-    public function getAuthorName(){
+    public function getAuthorName()
+    {
         return $this->getData(self::AUTHOR_NAME);
     }
 
@@ -189,7 +270,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $author_name
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setAuthorName($author_name){
+    public function setAuthorName($author_name)
+    {
         return $this->setData(self::AUTHOR_NAME, $author_name);
     }
 
@@ -197,7 +279,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get answer
      * @return string|null
      */
-    public function getAnswer() {
+    public function getAnswer()
+    {
         $answer = $this->helper->filter($this->getData('answer'));
         return $answer;
     }
@@ -207,7 +290,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $answer
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setAnswer($answer){
+    public function setAnswer($answer)
+    {
         return $this->setData(self::ANSWER, $answer);
     }
 
@@ -215,7 +299,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get creation_time
      * @return string|null
      */
-    public function getCreationTime(){
+    public function getCreationTime()
+    {
         return $this->getData(self::CREATION_TIME);
     }
 
@@ -224,14 +309,16 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $creation_time
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setCreationTime($creation_time){
-        return $this->setData(self::CREATION_TIME,$creation_time);
+    public function setCreationTime($creation_time)
+    {
+        return $this->setData(self::CREATION_TIME, $creation_time);
     }
     /**
      * Get update_time
      * @return string|null
      */
-    public function getUpdateTime(){
+    public function getUpdateTime()
+    {
         return $this->getData(self::UPDATE_TIME);
     }
 
@@ -240,14 +327,16 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $update_time
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setUpdateTime($update_time){
-        return $this->setData(self::UPDATE_TIME,$update_time);
+    public function setUpdateTime($update_time)
+    {
+        return $this->setData(self::UPDATE_TIME, $update_time);
     }
     /**
      * Get is_featured
      * @return bool|null
      */
-    public function getIsFeatured(){
+    public function getIsFeatured()
+    {
         return $this->getData(self::IS_FEATURED);
     }
 
@@ -256,14 +345,16 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param bool\int $is_featured
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setIsFeatured($is_featured){
-        return $this->setData(self::IS_FEATURED,$is_featured);
+    public function setIsFeatured($is_featured)
+    {
+        return $this->setData(self::IS_FEATURED, $is_featured);
     }
     /**
      * is_active
      * @return bool|null
      */
-    public function IsActive(){
+    public function IsActive()
+    {
         return (bool)$this->getData(self::IS_ACTIVE);
     }
 
@@ -271,7 +362,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get is_active
      * @return bool|null
      */
-    public function getIsActive(){
+    public function getIsActive()
+    {
         return (bool)$this->getData(self::IS_ACTIVE);
     }
 
@@ -280,7 +372,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param bool|int $is_active
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setIsActive($is_active){
+    public function setIsActive($is_active)
+    {
         return $this->setData(self::IS_ACTIVE, $is_active);
     }
 
@@ -288,7 +381,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get page_title
      * @return string|null
      */
-    public function getPageTitle(){
+    public function getPageTitle()
+    {
         return $this->getData(self::PAGE_TITLE);
     }
 
@@ -297,15 +391,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $page_title
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setPageTitle($page_title){
-        return $this->setData(self::PAGE_TITLE,$page_title);
+    public function setPageTitle($page_title)
+    {
+        return $this->setData(self::PAGE_TITLE, $page_title);
     }
 
     /**
      * Get meta_keywords
      * @return string|null
      */
-    public function getMetaKeywords(){
+    public function getMetaKeywords()
+    {
         return $this->getData(self::META_KEY_WORDS);
     }
     /**
@@ -313,15 +409,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $meta_keywords
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setMetaKeywords($meta_keywords){
-        return $this->setData(self::META_KEY_WORDS,$meta_keywords);
+    public function setMetaKeywords($meta_keywords)
+    {
+        return $this->setData(self::META_KEY_WORDS, $meta_keywords);
     }
 
     /**
      * Get meta_description
      * @return string|null
      */
-    public function getMetaDescription(){
+    public function getMetaDescription()
+    {
         return $this->getData(self::META_DESCRIPTION);
     }
     /**
@@ -329,15 +427,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $meta_description
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setMetaDescription($meta_description){
-        return $this->setData(self::META_DESCRIPTION,$meta_description);
+    public function setMetaDescription($meta_description)
+    {
+        return $this->setData(self::META_DESCRIPTION, $meta_description);
     }
 
     /**
      * Get question_position
      * @return int|null
      */
-    public function getQuestionPosition(){
+    public function getQuestionPosition()
+    {
         return $this->getData(self::QUESTION_POSITION);
     }
     /**
@@ -345,15 +445,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param int $question_position
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionPosition($question_position){
-        return $this->setData(self::QUESTION_POSITION,$question_position);
+    public function setQuestionPosition($question_position)
+    {
+        return $this->setData(self::QUESTION_POSITION, $question_position);
     }
 
     /**
      * Get tag
      * @return string|null
      */
-    public function getTag(){
+    public function getTag()
+    {
         return $this->getData(self::TAG);
     }
     /**
@@ -361,15 +463,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $tag
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTag($tag){
-        return $this->setData(self::TAG,$tag);
+    public function setTag($tag)
+    {
+        return $this->setData(self::TAG, $tag);
     }
 
     /**
      * Get like
      * @return int|null
      */
-    public function getLike(){
+    public function getLike()
+    {
         return $this->getData(self::LIKE);
     }
     /**
@@ -377,15 +481,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param int $like
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setLike($like){
-        return $this->setData(self::LIKE,$like);
+    public function setLike($like)
+    {
+        return $this->setData(self::LIKE, $like);
     }
 
     /**
      * Get disklike
      * @return int|null
      */
-    public function getDiskLike(){
+    public function getDiskLike()
+    {
         return $this->getData(self::DISKLIKE);
     }
     /**
@@ -393,15 +499,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param int $disklike
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setDiskLike($disklike){
-        return $this->setData(self::DISKLIKE,$disklike);
+    public function setDiskLike($disklike)
+    {
+        return $this->setData(self::DISKLIKE, $disklike);
     }
 
     /**
      * Get title_size
      * @return string|null
      */
-    public function getTitleSize(){
+    public function getTitleSize()
+    {
         return $this->getData(self::TITLE_SIZE);
     }
     /**
@@ -409,15 +517,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_size
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleSize($title_size){
-        return $this->setData(self::TITLE_SIZE,$title_size);
+    public function setTitleSize($title_size)
+    {
+        return $this->setData(self::TITLE_SIZE, $title_size);
     }
 
     /**
      * Get title_color
      * @return string|null
      */
-    public function getTitleColor(){
+    public function getTitleColor()
+    {
         return $this->getData(self::TITLE_COLOR);
     }
     /**
@@ -425,15 +535,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_color
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleColor($title_color){
-        return $this->setData(self::TITLE_COLOR,$title_color);
+    public function setTitleColor($title_color)
+    {
+        return $this->setData(self::TITLE_COLOR, $title_color);
     }
 
     /**
      * Get title_color_active
      * @return string|null
      */
-    public function getTitleColorActive(){
+    public function getTitleColorActive()
+    {
         return $this->getData(self::TITLE_COLOR_ACTIVE);
     }
     /**
@@ -441,15 +553,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_color_active
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleColorActive($title_color_active){
-        return $this->setData(self::TITLE_COLOR_ACTIVE,$title_color_active);
+    public function setTitleColorActive($title_color_active)
+    {
+        return $this->setData(self::TITLE_COLOR_ACTIVE, $title_color_active);
     }
 
     /**
      * Get title_bg
      * @return string|null
      */
-    public function getTitleBg(){
+    public function getTitleBg()
+    {
         return $this->getData(self::TITLE_BG);
     }
     /**
@@ -457,15 +571,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_bg
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleBg($title_bg){
-        return $this->setData(self::TITLE_BG,$title_bg);
+    public function setTitleBg($title_bg)
+    {
+        return $this->setData(self::TITLE_BG, $title_bg);
     }
 
     /**
      * Get title_bg_active
      * @return string|null
      */
-    public function getTitleBgActive(){
+    public function getTitleBgActive()
+    {
         return $this->getData(self::TITLE_BG_ACTIVE);
     }
     /**
@@ -473,15 +589,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_bg_active
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleBgActive($title_bg_active){
-        return $this->setData(self::TITLE_BG_ACTIVE,$title_bg_active);
+    public function setTitleBgActive($title_bg_active)
+    {
+        return $this->setData(self::TITLE_BG_ACTIVE, $title_bg_active);
     }
 
     /**
      * Get border_width
      * @return string|null
      */
-    public function getBorderWidth(){
+    public function getBorderWidth()
+    {
         return $this->getData(self::BORDER_WIDTH);
     }
     /**
@@ -489,15 +607,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $border_width
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setBorderWidth($border_width){
-        return $this->setData(self::BORDER_WIDTH,$border_width);
+    public function setBorderWidth($border_width)
+    {
+        return $this->setData(self::BORDER_WIDTH, $border_width);
     }
 
     /**
      * Get title_border_color
      * @return string|null
      */
-    public function getTitleBorderColor(){
+    public function getTitleBorderColor()
+    {
         return $this->getData(self::TITLE_BORDER_COLOR);
     }
     /**
@@ -505,15 +625,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_border_color
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleBorderColor($title_border_color){
-        return $this->setData(self::TITLE_BORDER_COLOR,$title_border_color);
+    public function setTitleBorderColor($title_border_color)
+    {
+        return $this->setData(self::TITLE_BORDER_COLOR, $title_border_color);
     }
 
     /**
      * Get title_border_radius
      * @return string|null
      */
-    public function getTitleBorderRadius(){
+    public function getTitleBorderRadius()
+    {
         return $this->getData(self::TITLE_BORDER_RADIUS);
     }
     /**
@@ -521,15 +643,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $title_border_radius
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setTitleBorderRadius($title_border_radius){
-        return $this->setData(self::TITLE_BORDER_RADIUS,$title_border_radius);
+    public function setTitleBorderRadius($title_border_radius)
+    {
+        return $this->setData(self::TITLE_BORDER_RADIUS, $title_border_radius);
     }
 
     /**
      * Get body_size
      * @return string|null
      */
-    public function getBodySize(){
+    public function getBodySize()
+    {
         return $this->getData(self::BODY_SIZE);
     }
     /**
@@ -537,15 +661,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $body_size
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setBodySize($body_size){
-        return $this->setData(self::BODY_SIZE,$body_size);
+    public function setBodySize($body_size)
+    {
+        return $this->setData(self::BODY_SIZE, $body_size);
     }
 
     /**
      * Get body_color
      * @return string|null
      */
-    public function getBodyColor(){
+    public function getBodyColor()
+    {
         return $this->getData(self::BODY_COLOR);
     }
     /**
@@ -553,15 +679,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $body_color
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setBodyColor($body_color){
-        return $this->setData(self::BODY_COLOR,$body_color);
+    public function setBodyColor($body_color)
+    {
+        return $this->setData(self::BODY_COLOR, $body_color);
     }
 
     /**
      * Get body_bg
      * @return string|null
      */
-    public function getBodyBg(){
+    public function getBodyBg()
+    {
         return $this->getData(self::BODY_BG);
     }
     /**
@@ -569,15 +697,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $body_bg
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setBodyBg($body_bg){
-        return $this->setData(self::BODY_BG,$body_bg);
+    public function setBodyBg($body_bg)
+    {
+        return $this->setData(self::BODY_BG, $body_bg);
     }
 
     /**
      * Get question_margin
      * @return string|null
      */
-    public function getQuestionMargin(){
+    public function getQuestionMargin()
+    {
         return $this->getData(self::BODY_BG);
     }
     /**
@@ -585,15 +715,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $question_margin
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionMargin($question_margin){
-        return $this->setData(self::BODY_BG,$question_margin);
+    public function setQuestionMargin($question_margin)
+    {
+        return $this->setData(self::BODY_BG, $question_margin);
     }
 
     /**
      * Get question_icon
      * @return string|null
      */
-    public function getQuestionIcon(){
+    public function getQuestionIcon()
+    {
         return $this->getData(self::QUESTION_ICON);
     }
     /**
@@ -601,15 +733,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $question_icon
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionIcon($question_icon){
-        return $this->setData(self::QUESTION_ICON,$question_icon);
+    public function setQuestionIcon($question_icon)
+    {
+        return $this->setData(self::QUESTION_ICON, $question_icon);
     }
 
     /**
      * Get question_active_icon
      * @return string|null
      */
-    public function getQuestionActiveIcon(){
+    public function getQuestionActiveIcon()
+    {
         return $this->getData(self::QUESTION_ICON);
     }
     /**
@@ -617,15 +751,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $question_active_icon
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionActiveIcon($question_active_icon){
-        return $this->setData(self::QUESTION_ICON,$question_active_icon);
+    public function setQuestionActiveIcon($question_active_icon)
+    {
+        return $this->setData(self::QUESTION_ICON, $question_active_icon);
     }
 
     /**
      * Get animation_class
      * @return string|null
      */
-    public function getAnimationClass(){
+    public function getAnimationClass()
+    {
         return $this->getData(self::ANIMATION_CLASS);
     }
     /**
@@ -633,15 +769,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $animation_class
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setAnimationClass($animation_class){
-        return $this->setData(self::ANIMATION_CLASS,$animation_class);
+    public function setAnimationClass($animation_class)
+    {
+        return $this->setData(self::ANIMATION_CLASS, $animation_class);
     }
 
     /**
      * Get animation_speed
      * @return string|null
      */
-    public function getAnimationSpeed(){
+    public function getAnimationSpeed()
+    {
         return $this->getData(self::ANIMATION_SPEED);
     }
     /**
@@ -649,16 +787,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $animation_speed
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setAnimationSpeed($animation_speed){
-        return $this->setData(self::ANIMATION_SPEED,$animation_speed);
+    public function setAnimationSpeed($animation_speed)
+    {
+        return $this->setData(self::ANIMATION_SPEED, $animation_speed);
     }
-
 
     /**
      * Get question_url
      * @return string|null
      */
-    public function getQuestionUrl(){
+    public function getQuestionUrl()
+    {
         return $this->getData(self::QUESTION_URL);
     }
 
@@ -667,7 +806,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $question_url
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setQuestionUrl($question_url){
+    public function setQuestionUrl($question_url)
+    {
         return $this->setData(self::QUESTION_URL, $question_url);
     }
 
@@ -675,7 +815,8 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * Get categories
      * @return string[]|null
      */
-    public function getCategories(){
+    public function getCategories()
+    {
         return $this->getData(self::CATEGORIES);
     }
 
@@ -684,15 +825,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string[] $categories
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setCategories($categories){
-        return $this->setData(self::CATEGORIES,$categories);
+    public function setCategories($categories)
+    {
+        return $this->setData(self::CATEGORIES, $categories);
     }
 
     /**
      * Get limit
      * @return string|null
      */
-    public function getLimit(){
+    public function getLimit()
+    {
         return $this->getData(self::LIMIT);
     }
 
@@ -701,15 +844,17 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string $limit
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setLimit($limit){
-        return $this->setData(self::LIMIT,$limit);
+    public function setLimit($limit)
+    {
+        return $this->setData(self::LIMIT, $limit);
     }
 
     /**
      * Get stores
      * @return string[]|null
      */
-    public function getStores(){
+    public function getStores()
+    {
         return $this->getData(self::STORES);
     }
     /**
@@ -717,12 +862,9 @@ class Question extends \Magento\Framework\Model\AbstractModel implements Questio
      * @param string[] $stores
      * @return \Lof\Faq\Api\Data\QuestionInterface
      */
-    public function setStores($stores){
-        return $this->setData(self::STORES,$stores);
+    public function setStores($stores)
+    {
+        return $this->setData(self::STORES, $stores);
     }
 
-    public function beforeSave()
-    {
-       return parent::beforeSave();
-    }
 }

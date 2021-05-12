@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 namespace Lof\Faq\Block\Tag;
 
@@ -105,7 +105,7 @@ class View extends \Magento\Framework\View\Element\Template
 
     protected function _addBreadcrumbs()
     {
-        $breadcrumbsBlock = $this->getLayout()->getBlock('breadcrumbs'); 
+        $breadcrumbsBlock = $this->getLayout()->getBlock('breadcrumbs');
         $route = $this->_faqHelper->getConfig('general_settings/route');
         $baseUrl = $this->_storeManager->getStore()->getBaseUrl();
         $page_title = $this->getConfig('faq_page/page_title');
@@ -181,7 +181,7 @@ class View extends \Magento\Framework\View\Element\Template
     }
 
     protected function _prepareLayout()
-    {   
+    {
         $page_title = $this->getConfig('faq_page/page_title');
         $meta_description = $this->getConfig('faq_page/meta_description');
         $meta_keywords = $this->getConfig('faq_page/meta_keywords');
@@ -189,13 +189,13 @@ class View extends \Magento\Framework\View\Element\Template
         $this->_addBreadcrumbs();
         $this->pageConfig->addBodyClass('faq-page');
         if($page_title){
-            $this->pageConfig->getTitle()->set($page_title);   
+            $this->pageConfig->getTitle()->set($page_title);
         }
         if($meta_keywords){
-            $this->pageConfig->setKeywords($meta_keywords);   
+            $this->pageConfig->setKeywords($meta_keywords);
         }
         if($meta_description){
-            $this->pageConfig->setDescription($meta_description);   
+            $this->pageConfig->setDescription($meta_description);
         }
         return parent::_prepareLayout();
     }
@@ -211,8 +211,8 @@ class View extends \Magento\Framework\View\Element\Template
     protected function _beforeToHtml()
     {
         $store = $this->_storeManager->getStore();
-        $itemsperpage = (int)$this->getConfig('faq_page/item_per_page'); 
-        $isSearch = $this->getData('is_search'); 
+        $itemsperpage = (int)$this->getConfig('faq_page/item_per_page');
+        $isSearch = $this->getData('is_search');
         $questionIds = $this->_coreRegistry->registry('questionIds');
         $questionCollection = $this->_questionFactory->getCollection()
         ->addFieldToFilter('main_table.is_active',1)
@@ -234,7 +234,7 @@ class View extends \Magento\Framework\View\Element\Template
         }
         return parent::_beforeToHtml();
     }
- 
+
     public function getNameTag(){
         return $this->_coreRegistry->registry('tag_name');
     }

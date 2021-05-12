@@ -1,22 +1,22 @@
 <?php
 /**
  * Landofcoder
- * 
+ *
  * NOTICE OF LICENSE
- * 
- * This source file is subject to the landofcoder.com license that is
+ *
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
- * 
+ * https://landofcoder.com/terms
+ *
  * DISCLAIMER
- * 
+ *
  * Do not edit or add to this file if you wish to upgrade this extension to newer
  * version in the future.
- * 
+ *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 
 namespace Lof\Faq\Block\Adminhtml;
@@ -38,11 +38,11 @@ class Menu extends \Magento\Backend\Block\Template
     protected $_template = 'Lof_All::menu.phtml';
 
 
-    public function __construct(\Magento\Backend\Block\Template\Context $context,
+    public function __construct(
+        \Magento\Backend\Block\Template\Context $context,
         array $data = []
     ) {
         parent::__construct($context);
-
     }//end __construct()
 
 
@@ -60,7 +60,7 @@ class Menu extends \Magento\Backend\Block\Template
                                                             'url'      => $this->getUrl('*/question/new'),
                                                             'resource' => 'Lof_Faq::question_edit',
                                                            ],
-                                    ],
+                                     ],
                                     ],
                        'category' => [
                                      'title'    => __('Manage Categories'),
@@ -74,7 +74,7 @@ class Menu extends \Magento\Backend\Block\Template
                                                        ]
                                                    ]
                                     ],
-                        'category' => [
+                        'tag' => [
                             'title'    => __('Manage Tags'),
                             'url'      => $this->getUrl('*/tag/index'),
                             'resource' => 'Lof_Faq::tag',
@@ -115,7 +115,6 @@ class Menu extends \Magento\Backend\Block\Template
         }//end if
 
         return $this->items;
-
     }//end getMenuItems()
 
 
@@ -129,9 +128,7 @@ class Menu extends \Magento\Backend\Block\Template
         if (array_key_exists($controllerName, $items)) {
             return $items[$controllerName];
         }
-
         return $items['page'];
-
     }//end getCurrentItem()
 
 
@@ -149,7 +146,6 @@ class Menu extends \Magento\Backend\Block\Template
         }
 
         return $result;
-
     }//end renderAttributes()
 
 
@@ -160,8 +156,5 @@ class Menu extends \Magento\Backend\Block\Template
     public function isCurrent($itemIndex)
     {
         return $itemIndex == $this->getRequest()->getControllerName();
-
     }//end isCurrent()
-
-
 }//end class

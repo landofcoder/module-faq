@@ -4,9 +4,9 @@
  *
  * NOTICE OF LICENSE
  *
- * This source file is subject to the landofcoder.com license that is
+ * This source file is subject to the Landofcoder.com license that is
  * available through the world-wide-web at this URL:
- * http://landofcoder.com/license
+ * https://landofcoder.com/terms
  *
  * DISCLAIMER
  *
@@ -14,16 +14,16 @@
  * version in the future.
  *
  * @category   Landofcoder
- * @package    Lof_FAQ
- * @copyright  Copyright (c) 2016 Landofcoder (http://www.landofcoder.com/)
- * @license    http://www.landofcoder.com/LICENSE-1.0.html
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
  */
 
 namespace Lof\Faq\Model;
 
+use Lof\Faq\Model\ResourceModel\Tag\Collection;
 use Magento\Framework\DataObject\IdentityInterface;
 use Lof\Faq\Api\Data\TagInterface;
-
 
 class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface, IdentityInterface
 {
@@ -54,13 +54,12 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \Lof\Faq\Model\ResourceModel\Tag $resource = null,
-        \Lof\Faq\Model\ResourceModel\Tag\Collection $resourceCollection = null,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\UrlInterface $url,
+        ResourceModel\Tag $resource = null,
+        Collection $resourceCollection = null,
         array $data = []
-    )
-    {
+    ) {
         $this->_storeManager = $storeManager;
         $this->_url = $url;
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
@@ -74,6 +73,26 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
     protected function _construct()
     {
         $this->_init('Lof\Faq\Model\ResourceModel\Tag');
+    }
+
+    /**
+     * Retrieve existing extension attributes object or create a new one.
+     * @return \Lof\Faq\Api\Data\TagExtensionInterface|null
+     */
+    public function getExtensionAttributes()
+    {
+        return $this->_getExtensionAttributes();
+    }
+
+    /**
+     * Set an extension attributes object.
+     * @param \Lof\Faq\Api\Data\TagExtensionInterface $extensionAttributes
+     * @return $this
+     */
+    public function setExtensionAttributes(
+        \Lof\Faq\Api\Data\TagExtensionInterface $extensionAttributes
+    ) {
+        return $this->_setExtensionAttributes($extensionAttributes);
     }
 
     /**
@@ -188,7 +207,8 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
      * Get categories
      * @return string[]|null
      */
-    public function getCategories(){
+    public function getCategories()
+    {
         return $this->getData(self::CATEGORIES);
     }
 
@@ -197,7 +217,8 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
      * @param string[] $categories
      * @return \Lof\Faq\Api\Data\TagInterface
      */
-    public function setCategories($categories){
+    public function setCategories($categories)
+    {
         return $this->setData(self::CATEGORIES, $categories);
     }
 
@@ -205,7 +226,8 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
      * Get stores
      * @return string[]|null
      */
-    public function getStores(){
+    public function getStores()
+    {
         return $this->getData(self::STORES);
     }
     /**
@@ -213,7 +235,8 @@ class Tag extends \Magento\Framework\Model\AbstractModel implements TagInterface
      * @param string[] $stores
      * @return \Lof\Faq\Api\Data\TagInterface
      */
-    public function setStores($stores){
+    public function setStores($stores)
+    {
         return $this->setData(self::STORES, $stores);
     }
 }

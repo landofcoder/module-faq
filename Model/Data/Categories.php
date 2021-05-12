@@ -1,4 +1,23 @@
 <?php
+/**
+ * Landofcoder
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Landofcoder.com license that is
+ * available through the world-wide-web at this URL:
+ * https://landofcoder.com/terms
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade this extension to newer
+ * version in the future.
+ *
+ * @category   Landofcoder
+ * @package    Lof_Faq
+ * @copyright  Copyright (c) 2021 Landofcoder (https://www.landofcoder.com/)
+ * @license    https://landofcoder.com/terms
+ */
 
 namespace Lof\Faq\Model\Data;
 
@@ -8,16 +27,13 @@ use Lof\Faq\Model\Category;
 use Lof\Faq\Model\CategoryFactory;
 use Lof\Faq\Model\ResourceModel\Category as ResourceCategory;
 use Magento\Backend\Helper\Js;
-use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Api\ExtensionAttribute\JoinProcessorInterface;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Exception\CouldNotSaveException;
 use Magento\Framework\Filesystem;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class Categories
- * @package Lof\Faq\Model\Data
- */
 class Categories implements CategoriesInterface
 {
     /**
@@ -52,6 +68,18 @@ class Categories implements CategoriesInterface
      * @var ResourceCategory
      */
     protected $resource;
+    /**
+     * @var JoinProcessorInterface
+     */
+    private $extensionAttributesJoinProcessor;
+    /**
+     * @var CollectionProcessorInterface
+     */
+    private $collectionProcessor;
+    /**
+     * @var ResourceCategory\CollectionFactory
+     */
+    private $categoryCollectionFactory;
 
     /**
      * Categories constructor.
@@ -63,6 +91,9 @@ class Categories implements CategoriesInterface
      * @param StoreManagerInterface $storeManager
      * @param Data\CategorySearchResultsInterfaceFactory $searchResultsFactory
      * @param ResourceCategory $resourceCategory
+     * @param JoinProcessorInterface $extensionAttributesJoinProcessor
+     * @param CollectionProcessorInterface $collectionProcessor
+     * @param ResourceCategory\CollectionFactory $categoryCollection
      */
     public function __construct(
         ResourceConnection $resource,
@@ -72,9 +103,11 @@ class Categories implements CategoriesInterface
         Category $category,
         StoreManagerInterface $storeManager,
         Data\CategorySearchResultsInterfaceFactory $searchResultsFactory,
-        ResourceCategory $resourceCategory)
-
-    {
+        ResourceCategory $resourceCategory,
+        JoinProcessorInterface $extensionAttributesJoinProcessor,
+        CollectionProcessorInterface $collectionProcessor,
+        ResourceCategory\CollectionFactory $categoryCollection
+    ) {
         $this->_resource = $resource;
         $this->_categoryFactory = $categoryFactory;
         $this->_filesystem = $filesystem;
@@ -83,6 +116,9 @@ class Categories implements CategoriesInterface
         $this->searchResultsFactory = $searchResultsFactory;
         $this->storeManager = $storeManager;
         $this->resource = $resourceCategory;
+        $this->extensionAttributesJoinProcessor = $extensionAttributesJoinProcessor;
+        $this->collectionProcessor = $collectionProcessor;
+        $this->categoryCollectionFactory = $categoryCollection;
     }
 
     /**
@@ -120,7 +156,6 @@ class Categories implements CategoriesInterface
         return $searchResults;
     }
 
-
     /**
      * @param Data\CategoryInterface $category
      * @return bool|Data\CategoryInterface
@@ -141,7 +176,6 @@ class Categories implements CategoriesInterface
         } else {
             return false;
         }
-
     }
 
     /**
@@ -154,36 +188,38 @@ class Categories implements CategoriesInterface
         return $category->getData();
     }
 
-
     /**
-     * @param string $fieldId
-     * @return string|void
+     * {@inheritdoc}
      */
-    public function uploadImage($fieldId = 'image')
-    {
+    public function getList(
+        \Magento\Framework\Api\SearchCriteriaInterface $criteria,
+        $search
+    ) {
+        $collection = $this->categoryCollectionFactory->create();
 
-        if (isset($_FILES[$fieldId]) && $_FILES[$fieldId]['name'] != '') {
-            $uploader = $this->_objectManager->create(
-                'Magento\Framework\File\Uploader',
-                ['fileId' => $fieldId]
+        if ($search!="") {
+            $collection->addFieldToFilter(
+                'title',
+                ['like' => '%'.$search.'%']
             );
-
-            $mediaDirectory = $this->_objectManager->get('Magento\Framework\Filesystem')
-                ->getDirectoryRead(DirectoryList::MEDIA);
-            $mediaFolder = 'lof/faq/';
-            try {
-                $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
-                $uploader->setAllowRenameFiles(true);
-                $uploader->setFilesDispersion(false);
-                $result = $uploader->save($mediaDirectory->getAbsolutePath($mediaFolder)
-                );
-                return $mediaFolder . $result['name'];
-            } catch (\Exception $e) {
-                $this->_logger->critical($e);
-                $this->messageManager->addError($e->getMessage());
-            }
         }
-        return;
-    }
+        $this->extensionAttributesJoinProcessor->process(
+            $collection,
+            \Lof\Faq\Api\Data\CategoryInterface::class
+        );
 
+        $this->collectionProcessor->process($criteria, $collection);
+
+        $searchResults = $this->searchResultsFactory->create();
+        $searchResults->setSearchCriteria($criteria);
+
+        $items = [];
+        foreach ($collection as $model) {
+            $items[] = $model->getDataModel();
+        }
+
+        $searchResults->setItems($items);
+        $searchResults->setTotalCount($collection->getSize());
+        return $searchResults;
+    }
 }
