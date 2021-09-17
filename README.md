@@ -12,3 +12,13 @@ php bin/magento setup:static-content:deploy -f
 
 ###### manage faq extension
 manage faq by navigation to ```Landofcoder > Faq```
+
+###### Module FAQ GraphQl
+Setup via composer
+
+```
+composer require landofcoder/module-faq-graph-ql
+php bin/magento setup:upgrade
+php bin/magento setup:static-content:deploy -f
+
+```
