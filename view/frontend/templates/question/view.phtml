@@ -157,36 +157,35 @@ $show_tagcountdown = $helper->getConfig("sidebar/show_tagcountdown");
 	<?php } ?>
 	<?php
 		$tag  = $question->getTag();
-		$tags = explode(",", $tag);
-                if(!empty($tags)){
-                    $data = [];
-                    foreach ($tags as $k => $_tag) {
-                    	$name =  strtolower(str_replace(["_", " "], "-", trim($_tag) ) );
-                    	if(trim($_tag)!='' || trim($name)!=''){
-	                        $data[] = [
-	                        	'alias' => trim($name),
-	                        	'name' => trim($_tag)
-	                        ];
-                    	}
-                    }
+		$tags = !empty($tag) ? explode(",", $tag) : [];
+        if(!empty($tags)){
+            $data = [];
+            foreach ($tags as $k => $_tag) {
+                $name =  strtolower(str_replace(["_", " "], "-", trim($_tag) ) );
+                if(trim($_tag)!='' || trim($name)!=''){
+                    $data[] = [
+                        'alias' => trim($name),
+                        'name' => trim($_tag)
+                    ];
                 }
+            }
+        }
 	?>
-	<?php if(!empty($data) && $showTagblock){ ?>
+	<?php if(!empty($data) && $showTagblock) : ?>
 		<div class="faq-tags-details">
 			<div class="post-tag">
 				<span class="faq-tags-title"><?php echo $title; ?>:</span>
-				<?php foreach ($data as $k => $v) { ?>
-					<?php if(trim($v['name'])!=''){ ?>
+				<?php foreach ($data as $k => $v) : ?>
+					<?php if(trim($v['name'])!='') : ?>
 						<a href="<?php echo $helper->getTagUrl($v['alias']) ?>"  title="<?php echo $v['name'] ?>"><?php echo $v['name'] ?>
 							<?php if($show_tagcountdown){ ?>
 								<?php } ?>
 						</a>
-					<?php } ?>
-				<?php } ?>
+					<?php endif; ?>
+				<?php endforeach ?>
 				</div>
 			</div>
-			<?php } ?>
+			<?php endif; ?>
 		</div>
-	</div>
+</div>
 <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-57510af206df4bd0"></script>
-
