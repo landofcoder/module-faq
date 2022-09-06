@@ -63,50 +63,60 @@ class Faq extends \Magento\Framework\View\Element\Template implements \Magento\W
         \Lof\Faq\Model\ResourceModel\Category\Collection $collectionCat,
     	\Lof\Faq\Model\Question $questionFactory,
     	\Lof\Faq\Helper\Data $faqHelper,
-      \Magento\Framework\App\ResourceConnection $resource,
-      array $data = []
-      ) {
+        \Magento\Framework\App\ResourceConnection $resource,
+        array $data = []
+    ) {
         $this->_collectionCat = $collectionCat;
     	$this->_faqHelper = $faqHelper;
     	$this->_questionFactory = $questionFactory;
-      $this->_resource = $resource;
-      parent::__construct($context);
-      $this->setTemplate("Lof_Faq::widget/list.phtml");
+        $this->_resource = $resource;
+        parent::__construct($context, $data);
+        $this->setTemplate("Lof_Faq::widget/list.phtml");
     }
 
-    public function _toHtml(){
-    	if(!$this->_faqHelper->getConfig('general_settings/enable')) return;
+    /**
+     * @inheritdoc
+     */
+    public function _toHtml()
+    {
+    	if(!$this->_faqHelper->getConfig('general_settings/enable')) {
+            return;
+        }
     	$store = $this->_storeManager->getStore();
     	$itemsperpage = (int)$this->getData('item_per_page');
-      $categories = $this->getData('categories');
-      $cats = explode(',', $categories);
+        $categories = $this->getData('categories');
+        $cats = explode(',', $categories);
 
-      $questionCollection = $this->_questionFactory->getCollection()
-      ->addFieldToFilter('main_table.is_active',1);
+        $questionCollection = $this->_questionFactory->getCollection()
+                                ->addFieldToFilter('main_table.is_active', 1);
 
-      if($this->getData('is_featured')){
-        $questionCollection->addFieldToFilter('main_table.is_featured',1);
-      }
-
-      if($itemsperpage ) $questionCollection->setPageSize($itemsperpage);
-      $questionCollection->addStoreFilter($store);
-      if(count($cats)>0){
-        $questionCollection->getSelect("main_table.question_id")
-        ->joinLeft([
-          'cat' => $this->_resource->getTableName('lof_faq_question_category')],
-          'cat.question_id = main_table.question_id',[
-          "question_id" => "question_id"
-          ])->where('cat.category_id IN (?)', $categories);
-        if(count($cats)==1){
-          $questionCollection->getSelect()->order('position ASC');
-        } else {
-          $questionCollection->getSelect()->order("main_table.question_id DESC");
+        if ($this->getData('is_featured')) {
+            $questionCollection->addFieldToFilter('main_table.is_featured', 1);
         }
-        $questionCollection->getSelect()->group('cat.question_id');
-      }
-      $this->setCollection($questionCollection);
 
-      return parent::_toHtml();
+        if ($itemsperpage ) {
+            $questionCollection->setPageSize($itemsperpage);
+        }
+        $questionCollection->addStoreFilter($store);
+
+        if (count($cats) > 0 ) {
+            $questionCollection->getSelect("main_table.question_id")
+                ->joinLeft([
+                    'cat' => $this->_resource->getTableName('lof_faq_question_category')],
+                    'cat.question_id = main_table.question_id',[
+                    "question_id" => "question_id"
+                    ])
+                ->where('cat.category_id IN (?)', $categories);
+            if (count($cats)==1) {
+                $questionCollection->getSelect()->order('position ASC');
+            } else {
+                $questionCollection->getSelect()->order("main_table.question_id DESC");
+            }
+            $questionCollection->getSelect()->group('cat.question_id');
+        }
+        $this->setCollection($questionCollection);
+
+        return parent::_toHtml();
     }
 
     public function setCollection($collection)
@@ -115,12 +125,13 @@ class Faq extends \Magento\Framework\View\Element\Template implements \Magento\W
     	return $this;
     }
 
-    public function getCollection(){
+    public function getCollection()
+    {
     	return $this->_collection;
     }
 
-    public function getQuestionByCategory($catId){
-
+    public function getQuestionByCategory($catId)
+    {
         $productIds = $this->_collectionCat->getAllIds();
         $itemsperpage = (int)$this->getConfig('faq_page/item_per_page');
         $questionCollection = $this->_questionFactory->getCollection();
@@ -148,4 +159,4 @@ class Faq extends \Magento\Framework\View\Element\Template implements \Magento\W
         $questionCollection->getSelect()->order('position ASC')->order('main_table.question_id DESC')->group('main_table.question_id');
         return $questionCollection;
     }
-  }
+}
