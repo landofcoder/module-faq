@@ -40,7 +40,7 @@ class Tag extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         $connectionName = null
-        ) {
+    ) {
         parent::__construct($context, $connectionName);
         $this->_storeManager = $storeManager;
     }
