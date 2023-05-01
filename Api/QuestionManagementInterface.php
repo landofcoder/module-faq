@@ -52,7 +52,7 @@ interface QuestionManagementInterface
      * @param $tag
      * @param $identifier
      * @param $sku
-     * @return \Lof\Faq\Api\Data\CategorySearchResultsInterface
+     * @return \Lof\Faq\Api\Data\QuestionSearchResultsInterface
      */
     public function getList(
         \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria,
