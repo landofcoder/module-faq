@@ -252,6 +252,7 @@ interface QuestionInterface extends \Magento\Framework\Api\ExtensibleDataInterfa
      * @return string|null
      */
     public function getTag();
+
     /**
      * Set tag
      * @param string $tag

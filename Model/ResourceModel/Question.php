@@ -319,19 +319,19 @@ class Question extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
             'question_id = :question_id'
             );
             $binds = [':question_id' => (int)$id];
-            return $connection->fetchCol($select, $binds);
-        }
+        return $connection->fetchCol($select, $binds);
+    }
 
-        public function lookupCategoryIds($id)
-        {
-            $connection = $this->getConnection();
-            $select = $connection->select()->from(
-                $this->getTable('lof_faq_question_category'),
-                'category_id'
-                )->where(
-                'question_id = :question_id'
-                );
-                $binds = [':question_id' => (int)$id];
-                return $connection->fetchCol($select, $binds);
-            }
-        }
+    public function lookupCategoryIds($id)
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()->from(
+            $this->getTable('lof_faq_question_category'),
+            'category_id'
+            )->where(
+            'question_id = :question_id'
+            );
+            $binds = [':question_id' => (int)$id];
+        return $connection->fetchCol($select, $binds);
+    }
+}

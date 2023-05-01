@@ -81,8 +81,8 @@ class QuestionRepository implements QuestionRepositoryInterface
     public function getList()
     {
         $questionCollection = $this->_questionFactory->getCollection()
-        ->setCurPage(1)
-        ->setOrder('question_id', 'DESC');
+                        ->setCurPage(1)
+                        ->setOrder('question_id', 'DESC');
 
         /** @var Data\QuestionSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();

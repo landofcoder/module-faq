@@ -857,6 +857,7 @@ class Question extends AbstractModel implements QuestionInterface, IdentityInter
     {
         return $this->getData(self::STORES);
     }
+
     /**
      * Set stores
      * @param string[] $stores
